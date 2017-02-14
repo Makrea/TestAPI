@@ -593,7 +593,7 @@ public class Connections {
 		}
 		URL url = null;
 		try {
-			url = new URL(getIpServidor() + "/API/bpm/caseVariable?p=0&f=case_id=" + caseID);
+			url = new URL(getIpServidor() + "/API/bpm/caseVariable?p=0&c=100&f=case_id=" + caseID);
 		} catch (MalformedURLException e1) {
 			error[0] = "-6";
 			LOGGER.error("Error obtaining process variables. Exception: " + e1);
