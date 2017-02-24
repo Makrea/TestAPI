@@ -114,6 +114,8 @@ public class LogIn extends JPanel implements ActionListener, KeyListener {
 		final JLabel logo = new JLabel("");
 		logo.setBounds(10, 191, 563, 203);
 		final Image imagemLogo = new ImageIcon(this.getClass().getResource("/logo.jpg")).getImage();
+		logo.setIcon(new ImageIcon(imagemLogo));
+		add(logo);
 
 		servidorField = new JTextField();
 		servidorField.setToolTipText("Server IP Address");
@@ -124,8 +126,6 @@ public class LogIn extends JPanel implements ActionListener, KeyListener {
 		JLabel lblServidorIp = new JLabel("Server IP:");
 		lblServidorIp.setBounds(177, 240, 60, 14);
 		add(lblServidorIp);
-		logo.setIcon(new ImageIcon(imagemLogo));
-		add(logo);
 
 		lblAIRC = new JLabel("");
 		lblAIRC.setBounds(204, 8, 358, 138);
