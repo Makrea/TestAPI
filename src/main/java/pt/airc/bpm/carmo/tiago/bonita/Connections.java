@@ -312,7 +312,14 @@ public class Connections {
 			return error;
 		}
 		LOGGER.info("Candidate obtained");
-		return getActors(actorID);
+		StringBuilder actores = new StringBuilder();
+		String[] actors = getActors(actorID);
+		for(int i = 0; i<actors.length;i++){
+			actores.append(actors[i] + "#");
+		}
+		String[] finalArray = new String[1];
+		finalArray[0] = actores.toString().substring(0,actores.toString().length()-1);
+		return finalArray;
 	}
 
 	/**
@@ -1723,7 +1730,7 @@ public class Connections {
 		}
 		final ArrayList<String> userIDs = new ArrayList<String>();
 		for (int i = 0; i < userList.size(); i++) {
-			userIDs.add(userList.get(i).getFirstname() + " " + userList.get(i).getLastname());
+			userIDs.add(userList.get(i).getUserName());
 		}
 		LOGGER.info("User ids obtained");
 		return userIDs;
@@ -1806,7 +1813,7 @@ public class Connections {
 		try {
 			code = connection.getResponseCode();
 		} catch (IOException e) {
-			LOGGER.error("Unexpected error executing metrhod. Exception: " + e);
+			LOGGER.error("Unexpected error executing method. Exception: " + e);
 			return "-101";
 		}
 		if (code != SUCCESS_CODE) {
@@ -1865,7 +1872,7 @@ public class Connections {
 			return "-8";
 		}
 		LOGGER.info("Actor name obtained");
-		return user.getFirstname() + " " + user.getLastname();
+		return user.getUserName();
 	}
 
 	/**
@@ -1890,10 +1897,18 @@ public class Connections {
 		for (final Task task : taskList) {
 			if (task.getName().contains(MILESTONE)) {
 				milestones.add(task.getName());
+				milestones.add("true");
+				milestones.add(task.getReached_state_date());
+				milestones.add("3");
 			}
 		}
-		LOGGER.info("Milestones names obtained");
+		LOGGER.info("Milestones details obtained");
 		return milestones;
+	}
+	
+	public String[] createWorkFlowDafuq(){
+		
+		return null;
 	}
 
 	/**
@@ -1997,5 +2012,54 @@ public class Connections {
 	public void setUserName(String userName1) {
 		this.userName = userName1;
 	}
+	
+	// ***********************testes************************ //
 
+	public final String createWorkflow(final String processName) {
+		URL url = null;
+		try {
+			url = new URL(getIpServidor() + "/API/bpm/process?s=" + processName);
+		} catch (MalformedURLException e1) {
+			LOGGER.error("Error retrieving process contract. Exception: " + e1);
+			return null;
+		}
+		StringBuilder sbuilder = new StringBuilder();
+		try {
+			sbuilder = executeGetRequest(url);
+		} catch (IOException e1) {
+			LOGGER.error("Unexpected error executing method. Exception: " + e1);
+			return null;
+		}
+		Process process = null;
+		try {
+			process = UNMARSH.process(sbuilder.toString());
+		} catch (JAXBException e) {
+			LOGGER.error("Error parsing JSON. Exception:" + e);
+			return null;
+		}
+		
+		String processID = process.getId();
+		URL url2;
+		try {
+			url2 = new URL(getIpServidor() + "/API/bpm/case");
+		} catch (MalformedURLException e1) {
+			LOGGER.error("Error retrieving process contract. Exception: " + e1);
+			return null;
+		}
+		String line = null;
+		try {
+			HttpURLConnection con = executePostRequest(url2, "");
+			if(con.getResponseCode() == 200){
+				final BufferedReader breader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				while ((line = breader.readLine()) != null) {
+					sbuilder.append(line + '\n');
+				}
+			};
+		} catch (IOException e) {
+			LOGGER.error("Error: " + e);
+			return null;
+		}
+		return null;
+	}
+	
 }

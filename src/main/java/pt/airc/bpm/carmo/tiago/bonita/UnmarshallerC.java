@@ -148,6 +148,14 @@ public class UnmarshallerC {
 
 		return task;
 	}
+	
+	public final Process process(final String msg) throws JAXBException {
+		final Gson gson = new Gson();
+
+		final Process process = gson.fromJson(msg, Process.class);
+
+		return process;
+	}
 
 	/**
 	 * Unmarshall Users to an arrayList.

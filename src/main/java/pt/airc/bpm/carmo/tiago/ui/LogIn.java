@@ -110,12 +110,7 @@ public class LogIn extends JPanel implements ActionListener, KeyListener {
 		passwordField.setToolTipText("Password");
 		passwordField.setBounds(247, 206, 105, 20);
 		add(passwordField);
-
-		final JLabel logo = new JLabel("");
-		logo.setBounds(10, 191, 563, 203);
 		final Image imagemLogo = new ImageIcon(this.getClass().getResource("/logo.jpg")).getImage();
-		logo.setIcon(new ImageIcon(imagemLogo));
-		add(logo);
 
 		servidorField = new JTextField();
 		servidorField.setToolTipText("Server IP Address");
@@ -130,6 +125,11 @@ public class LogIn extends JPanel implements ActionListener, KeyListener {
 		lblAIRC = new JLabel("");
 		lblAIRC.setBounds(204, 8, 358, 138);
 		final Image imagemAIRC = new ImageIcon(this.getClass().getResource("/airc.png")).getImage();
+		
+				final JLabel logo = new JLabel("");
+				logo.setBounds(10, 191, 563, 203);
+				logo.setIcon(new ImageIcon(imagemLogo));
+				add(logo);
 		lblAIRC.setIcon(new ImageIcon(imagemAIRC));
 		add(lblAIRC);
 

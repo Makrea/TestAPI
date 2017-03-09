@@ -825,10 +825,7 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 				JOptionPane.showMessageDialog(null, "Unexpected error during method execution", ERROR,
 						JOptionPane.ERROR_MESSAGE);
 			} else {
-				for (int i = 0; i < response.length; i++) {
-					contractsArea.append("Name: " + response[i]);
-					contractsArea.append("\n");
-				}
+				contractsArea.append(response[0]);
 			}
 
 			// definir valor de variavel de tarefa
