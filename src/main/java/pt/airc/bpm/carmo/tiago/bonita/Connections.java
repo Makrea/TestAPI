@@ -591,38 +591,45 @@ public class Connections {
 	 *            from which to retrieve the description
 	 * @return a String with the task description or an error code
 	 */
-	public final String of_invokeGetStepInstructions(final String taskID) {
+	public final String[] of_invokeGetStepInstructions(final String taskID) {
+		String[] response = new String[1];
 		if (!taskID.matches(".*\\d+.*") || taskID.equals("")) {
 			LOGGER.error("Missing parameters");
-			return "-5";
+			response[0] = "-5";
+			return response;
 		}
 		URL url;
 		try {
 			url = new URL(getIpServidor() + "/API/bpm/task/" + taskID);
 		} catch (MalformedURLException e1) {
 			LOGGER.error("Error obtaining task instructions. Exception: " + e1);
-			return "-6";
+			response[0] = "-6";
+			return response;
 		}
 		StringBuilder sbuilder = new StringBuilder();
 		try {
 			sbuilder = executeGetRequest(url);
 		} catch (IOException e1) {
 			LOGGER.error("Unexpected error while executing method. Exception: " + e1);
-			return "-101";
+			response[0] = "-101";
+			return response;
 		}
 		Task task = null;
 		try {
 			task = UNMARSH.task(sbuilder.toString());
 		} catch (JAXBException e) {
 			LOGGER.error("Error parsing JSON. Exception: " + e);
-			return "-8";
+			response[0] = "-8";
+			return response;
 		}
 		if (task.getDescription().equals("")) {
 			LOGGER.info("Task has no description");
-			return "-1";
+			response[0] = "-1";
+			return response;
 		} else {
 			LOGGER.info("Description obtained");
-			return task.getDescription();
+			response[0] = task.getDescription();
+			return response;
 		}
 	}
 

@@ -421,7 +421,7 @@ public class MainApp {
 	 *            from which to get the instructions
 	 * @return the task instructions
 	 */
-	public final String of_invokeGetStepInstructions(final String taskID) {
+	public final String[] of_invokeGetStepInstructions(final String taskID) {
 		return this.request.of_invokeGetStepInstructions(taskID);
 	}
 

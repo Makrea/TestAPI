@@ -663,22 +663,22 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 			// receber a descrição de uma tarefa
 		} else if (event.getSource() == this.btnDescription) {
 
-			String description = this.app.of_invokeGetStepInstructions(this.textTaskID.getText());
-			if (description.equals("-5")) {
+			String[] description = this.app.of_invokeGetStepInstructions(this.textTaskID.getText());
+			if (description[0].equals("-5")) {
 				JOptionPane.showMessageDialog(null, "Missing/Wrong Parameters.\nParameters needed: Task ID", ERROR,
 						JOptionPane.ERROR_MESSAGE);
-			} else if (description.equals("-6")) {
+			} else if (description[0].equals("-6")) {
 				JOptionPane.showMessageDialog(null, "Error obtaining task inscructions", ERROR,
 						JOptionPane.ERROR_MESSAGE);
-			} else if (description.equals("-8")) {
+			} else if (description[0].equals("-8")) {
 				JOptionPane.showMessageDialog(null, "Error parsing JSON", ERROR, JOptionPane.ERROR_MESSAGE);
-			} else if (description.equals("-101")) {
+			} else if (description[0].equals("-101")) {
 				JOptionPane.showMessageDialog(null, "Unexpected error while executing method", ERROR,
 						JOptionPane.ERROR_MESSAGE);
-			} else if (description.equals("-1")) {
+			} else if (description[0].equals("-1")) {
 				txtArea.setText("Task has no description");
 			} else {
-				txtArea.setText("Description: " + description);
+				txtArea.setText(description[0]);
 			}
 
 			// receber variáveis de tarefa
