@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 
 import pt.airc.bpm.carmo.tiago.pojos.ActivityVariable;
 import pt.airc.bpm.carmo.tiago.pojos.ActorMember;
-import pt.airc.bpm.carmo.tiago.pojos.BusinessData;
 import pt.airc.bpm.carmo.tiago.pojos.Case;
 import pt.airc.bpm.carmo.tiago.pojos.CaseVariable;
 import pt.airc.bpm.carmo.tiago.pojos.Contract;
@@ -129,7 +128,11 @@ public class Connections {
 			return "-5";
 		}
 		setIpServidor("http://" + ipServidor1 + "/bonita");
-		setUserName(Character.toUpperCase(username.charAt(0)) + username.substring(1, username.indexOf(".")));
+		try {
+			setUserName(Character.toUpperCase(username.charAt(0)) + username.substring(1, username.indexOf(".")));
+		} catch (Exception e) {
+			setUserName(username);
+		}
 		URL url = null;
 		try {
 			url = new URL("http://" + ipServidor1 + "/bonita/loginservice?username=" + username + "&password="
@@ -175,17 +178,16 @@ public class Connections {
 	 *            the version of the process
 	 * @return string with error or success code
 	 */
-	public final String of_invokeCreateWorkflow(final String processName, final String processID,
-			final String processVersion) {
-		if (processName.equals("") || !processID.matches(".*\\d+.*") || processID.equals("")
-				|| processVersion.equals("")) {
+	public final String of_invokeCreateWorkflow(final String processID) {
+		Process process = obtainProcess(processID);
+		if (!processID.matches(".*\\d+.*") || processID.equals("")) {
 			LOGGER.error("Missing parameters");
 			return "-5";
 		}
 		URL url = null;
 		try {
-			url = new URL(getIpServidor() + "/portal/resource/process/" + processName.replaceAll(" ", "%20") + "/"
-					+ processVersion + "/content/?id=" + processID);
+			url = new URL(getIpServidor() + "/portal/resource/process/" + process.getName().replaceAll(" ", "%20") + "/"
+					+ process.getVersion() + "/content/?id=" + processID);
 		} catch (MalformedURLException e1) {
 			LOGGER.error("Error starting case. Exception: " + e1);
 			return "-6";
@@ -209,6 +211,7 @@ public class Connections {
 			LOGGER.error("Unexpected error while executing method. No exception");
 			return "-101";
 		}
+
 	}
 
 	/**
@@ -314,11 +317,16 @@ public class Connections {
 		LOGGER.info("Candidate obtained");
 		StringBuilder actores = new StringBuilder();
 		String[] actors = getActors(actorID);
-		for(int i = 0; i<actors.length;i++){
+		for (int i = 0; i < actors.length; i++) {
 			actores.append(actors[i] + "#");
 		}
 		String[] finalArray = new String[1];
-		finalArray[0] = actores.toString().substring(0,actores.toString().length()-1);
+		LOGGER.info("String built");
+		if (actores.length() != 0) {
+			finalArray[0] = actores.toString().substring(0, actores.length() - 1);
+		} else {
+			finalArray[0] = actores.toString();
+		}
 		return finalArray;
 	}
 
@@ -400,7 +408,7 @@ public class Connections {
 		}
 		URL url;
 		try {
-			url = new URL(getIpServidor() + "/API/bpm/flowNode?p=0&c=50&f=caseId=" + caseID);
+			url = new URL(getIpServidor() + "/API/bpm/task?p=0&c=150&f=caseId=" + caseID);
 		} catch (MalformedURLException e1) {
 			LOGGER.error("Error obtaining current tasks. Exception: " + e1);
 			error[0] = "-6";
@@ -422,21 +430,54 @@ public class Connections {
 			LOGGER.error("Error parsing JSON. Exception: " + e);
 			return error;
 		}
-		String[] tasksName = new String[taskList.size()];
+		ArrayList<String> currentTasks = new ArrayList<String>();
 		for (int i = 0; i < taskList.size(); i++) {
-			tasksName[i] = "Name: " + taskList.get(i).getName() + "\nID: " + taskList.get(i).getId()
-					+ "\nAssigned User: " + taskList.get(i).getAssigned_id() + "\nProcess ID: "
-					+ taskList.get(i).getProcessId() + "\nExpected End Date: " + taskList.get(i).getDueDate()
-					+ "\nDescription: " + taskList.get(i).getDescription() + "\nState: " + taskList.get(i).getState();
+			currentTasks.add(taskList.get(i).getCaseId());
+			currentTasks.add(taskList.get(i).getId());
+			currentTasks.add(taskList.get(i).getName());
+			currentTasks.add(taskList.get(i).getDueDate());
+			currentTasks.add(of_invokeGetCandidates(taskList.get(i).getId())[0]);
+			if (!taskList.get(i).getDescription().equals("")) {
+				currentTasks.add(taskList.get(i).getDescription());
+			} else {
+				currentTasks.add("No description");
+			}
+			currentTasks.add(taskList.get(i).getRootCaseId());
+			if (!taskList.get(i).getCaseId().equals(taskList.get(i).getRootCaseId())) {
+				currentTasks.add("SUB");
+			} else {
+				currentTasks.add("NOTSUB");
+			}
+			currentTasks.add(obtainProcess(taskList.get(i).getProcessId()).getName());
 		}
-		if (tasksName.length == 0) {
+		if (currentTasks.size() == 0) {
 			LOGGER.info("No tasks");
 			error[0] = "-1";
 			return error;
 		} else {
 			LOGGER.info("Tasks obtained");
-			return tasksName;
+			return currentTasks.toArray(new String[currentTasks.size()]);
 		}
+	}
+
+	/**
+	 * AUX
+	 * 
+	 * @param processID
+	 * @return
+	 */
+	public Process obtainProcess(final String processID) {
+		URL url;
+		Process process = null;
+		try {
+			url = new URL(getIpServidor() + "/API/bpm/process/" + processID);
+			StringBuilder sbuilder = new StringBuilder();
+			sbuilder = executeGetRequest(url);
+			process = UNMARSH.process(sbuilder.toString());
+		} catch (Exception e) {
+			LOGGER.error("Error obtaining process. Exception: " + e);
+		}
+		return process;
 	}
 
 	/**
@@ -483,13 +524,12 @@ public class Connections {
 		for (int i = 0; i < inputs.length; i++) {
 			if (inputs[i].getInputs().length != 0) {
 				for (int j = 0; j < inputs[i].getInputs().length; j++) {
-					responseItems[i] = sb.append("Name: " + inputs[i].getInputs()[j].getName() + "\nType: "
-							+ inputs[i].getInputs()[j].getType() + "\nDescription: "
-							+ inputs[i].getInputs()[j].getDescription()).toString();
+					responseItems[i] = sb.append(inputs[i].getInputs()[j].getName() + "\n"
+							+ inputs[i].getInputs()[j].getType() + "\n" + inputs[i].getInputs()[j].getDescription())
+							.toString();
 				}
 			} else {
-				responseItems[i] = "Name: " + inputs[i].getName() + "\nType: " + inputs[i].getType() + "\nDescription: "
-						+ inputs[i].getDescription();
+				responseItems[i] = inputs[i].getName() + "\n" + inputs[i].getType() + "\n" + inputs[i].getDescription();
 			}
 		}
 		if (responseItems.length == 0) {
@@ -523,13 +563,15 @@ public class Connections {
 		for (int i = 0; i < inputs.length; i++) {
 			if (inputs[i].getInputs().length != 0) {
 				for (int j = 0; j < inputs[i].getInputs().length; j++) {
-					inputDetails[i] = sb.append("Name: " + inputs[i].getInputs()[j].getName() + "\nType: "
-							+ inputs[i].getInputs()[j].getType() + "\nDescription: "
-							+ inputs[i].getInputs()[j].getDescription() + "\n\n").toString().trim();
+					inputDetails[i] = sb
+							.append(inputs[i].getInputs()[j].getName() + "\n" + inputs[i].getInputs()[j].getType()
+									+ "\n" + inputs[i].getInputs()[j].getDescription() + "\n\n")
+							.toString().trim();
 				}
 			} else {
-				inputDetails[i] = sb.append("Name: " + inputs[i].getName() + "\nType: " + inputs[i].getType()
-						+ "\nDescription: " + inputs[i].getDescription() + "\n\n").toString().trim();
+				inputDetails[i] = sb.append(
+						inputs[i].getName() + "\n" + inputs[i].getType() + "\n" + inputs[i].getDescription() + "\n\n")
+						.toString().trim();
 			}
 		}
 		if (inputDetails.length == 0) {
@@ -624,25 +666,15 @@ public class Connections {
 		}
 		String[] caseVariablesNames = new String[variableList.size()];
 		for (int i = 0; i < variableList.size(); i++) {
-			caseVariablesNames[i] = "Name: " + variableList.get(i).getName() + "\n" + "Type: "
-					+ variableList.get(i).getType() + "\n" + "Value: " + variableList.get(i).getValue() + "\n";
+			caseVariablesNames[i] = variableList.get(i).getName() + "\n" + variableList.get(i).getValue() + "\n";
 		}
-		String[] bdmVariables = null;
-		try {
-			bdmVariables = getProcessVariablesBDM(caseID);
-		} catch (IOException e) {
-			error[0] = "-6";
-			LOGGER.error("Error obtaining process variables. Exception: " + e);
-			return error;
-		}
-		String[] variableListFinal = ArrayUtils.addAll(caseVariablesNames, bdmVariables);
-		if (variableListFinal.length == 0) {
+		if (caseVariablesNames.length == 0) {
 			error[0] = "-1";
 			LOGGER.info("No variables");
 			return error;
 		} else {
 			LOGGER.info("Process variables retrieved");
-			return ArrayUtils.addAll(caseVariablesNames, bdmVariables);
+			return caseVariablesNames;
 		}
 	}
 
@@ -681,8 +713,7 @@ public class Connections {
 			LOGGER.info("Error parsing JSON. Exception: " + e);
 			return "-8";
 		}
-		String var = "ID: " + variable.getId() + "\nName: " + variable.getName() + "\nDescription: "
-				+ variable.getDescription() + "\nValue: " + variable.getValue();
+		String var = variable.getName() + "\n" + variable.getValue() + "\n";
 		if (var.equals("")) {
 			LOGGER.info("No such variable");
 			return "-1";
@@ -690,6 +721,53 @@ public class Connections {
 			LOGGER.info("Variable details retrieved");
 			return var;
 		}
+	}
+
+	/**
+	 *
+	 * @param taskId
+	 * @return
+	 */
+	public final String[] of_invokeGetActivityVariables(final String taskId) {
+		String[] error = new String[1];
+		if (!taskId.matches(".*\\d+.*") || taskId.equals("")) {
+			LOGGER.error("Missing parameters");
+			error[0] = "-5";
+			return error;
+		}
+		URL url;
+		try {
+			url = new URL(getIpServidor() + "/API/bpm/userTask/" + taskId + "/contract");
+		} catch (MalformedURLException e1) {
+			LOGGER.error("Error obtaining variable details. Exception: " + e1);
+			error[0] = "-6";
+			return error;
+		}
+		StringBuilder sbuilder = new StringBuilder();
+		try {
+			sbuilder = executeGetRequest(url);
+		} catch (IOException e1) {
+			LOGGER.error("Unexpected error executing method. Exception: " + e1);
+			error[0] = "-101";
+			return error;
+		}
+		Contract contract = null;
+		try {
+			contract = UNMARSH.unContract(sbuilder.toString());
+		} catch (JAXBException e) {
+			LOGGER.info("Error parsing JSON. Exception: " + e);
+			error[0] = "-8";
+			return error;
+		}
+		Input[] inputs = contract.getInputs();
+
+		String[] finalVariables = new String[inputs.length];
+
+		for (int i = 0; i < finalVariables.length; i++) {
+			finalVariables[i] = of_invokeGetActivityVariable(taskId, inputs[i].getName());
+		}
+
+		return finalVariables;
 	}
 
 	/**
@@ -701,7 +779,7 @@ public class Connections {
 		String[] error = new String[1];
 		URL url = null;
 		try {
-			url = new URL(getIpServidor() + "/API/bpm/process?p=0&c=100");
+			url = new URL(getIpServidor() + "/API/bpm/process?p=0&c=200");
 		} catch (MalformedURLException e1) {
 			error[0] = "-6";
 			LOGGER.error("Error obtaining exposed workflows. Exception: " + e1);
@@ -725,8 +803,8 @@ public class Connections {
 		}
 		String[] processArray = new String[processList.size()];
 		for (int i = 0; i < processList.size(); i++) {
-			processArray[i] = "Name: " + processList.get(i).getName() + "\n" + "ID: " + processList.get(i).getId()
-					+ "\nVersion: " + processList.get(i).getVersion();
+			processArray[i] = processList.get(i).getName() + "/" + processList.get(i).getId() + "/"
+					+ processList.get(i).getVersion();
 		}
 		if (processArray.length == 0) {
 			error[0] = "-1";
@@ -748,10 +826,15 @@ public class Connections {
 	 *            of the actor to reassign to the task
 	 * @return a string with success or error code
 	 */
-	public final String of_invokeReassignTaskCandidate(final String taskID, final String userName) {
+	public final String[] of_invokeReassignTaskCandidate(final String taskID, String userName) {
+		String[] response = new String[1];
 		if (!taskID.matches(".*\\d+.*") || taskID.equals("") || userName.equals("")) {
 			LOGGER.info("Missing parameters");
-			return "-5";
+			response[0] = "-5";
+			return response;
+		}
+		if (userName.contains(" ")) {
+			userName = userName.replace(" ", "%20");
 		}
 		URL url = null;
 		String payload = "{\"assigned_id\":\"" + "" + "\"}";
@@ -759,76 +842,48 @@ public class Connections {
 			url = new URL(getIpServidor() + "/API/bpm/userTask/" + taskID);
 		} catch (MalformedURLException e) {
 			LOGGER.error("Error defining new candidate. Exception: " + e);
-			return "-6";
+			response[0] = "-6";
+			return response;
 		}
 		HttpURLConnection connection = null;
 		try {
 			connection = executePutRequest(url, payload);
 		} catch (IOException e) {
 			LOGGER.error("Unexpected error executing method. Exception: " + e);
-			return "-101";
+			response[0] = "-101";
+			return response;
 		}
 		int code = 0;
 		try {
 			code = connection.getResponseCode();
 		} catch (IOException e1) {
 			LOGGER.error("Unexpected error executing method. Exception: " + e1);
-			return "-101";
+			response[0] = "-101";
+			return response;
 		}
 		if (code != SUCCESS_CODE) {
 			LOGGER.error("Error defining new candidate. Response code: " + code);
-			return "-6";
+			response[0] = "-6";
+			return response;
 		} else {
 			try {
+				if (userName.contains("%20")) {
+					userName = userName.replace("%20", " ");
+				}
 				if (assignTask(taskID, userName).equals("1")) {
 					LOGGER.info("Task assigned to user " + userName);
-					return "1";
+					response[0] = "1";
+					return response;
 				} else {
 					LOGGER.error("Error defining new candidate. No exception");
-					return "-6";
+					response[0] = "-6";
+					return response;
 				}
 			} catch (IOException e) {
 				LOGGER.error("Unexpected error executing method. Exception: " + e);
-				return "-101";
+				response[0] = "-101";
+				return response;
 			}
-		}
-	}
-
-	/**
-	 * Get process bdm variables details.
-	 *
-	 * @param bdmType
-	 *            type of bdm variable
-	 * @param bdmID
-	 *            id of bdm variable
-	 * @return the bdm variable details
-	 */
-	public final String of_invokeGetProcessBDMVariable(final String bdmType, final String bdmID) {
-		if (bdmType.equals("") || !bdmID.matches(".*\\d+.*") || bdmID.equals("")) {
-			LOGGER.error("Missing parameters");
-			return "-5";
-		}
-		URL url;
-		try {
-			url = new URL(getIpServidor() + "/API/bdm/businessData/" + bdmType + "/findByIds?ids=" + bdmID);
-		} catch (MalformedURLException e) {
-			LOGGER.error("Error obtiaing the variable details. Exception: " + e);
-			return "-6";
-		}
-		StringBuilder sbuilder = new StringBuilder();
-		try {
-			sbuilder = executeGetRequest(url);
-		} catch (IOException e) {
-			LOGGER.error("Unexpected error while executing method. Exception: " + e);
-			return "-101";
-		}
-		if (sbuilder.equals("")) {
-			LOGGER.error("No such BDM variable");
-			return "-1";
-		} else {
-			LOGGER.info("BDM Variable details obtained");
-			return sbuilder.toString().replaceAll(",", "\n").replaceAll("\"", "").replace("[", "").replace("]", "")
-					.replace("{", "").replace("}", "").replaceAll(":", ": ");
 		}
 	}
 
@@ -865,9 +920,8 @@ public class Connections {
 		}
 		String[] casesID = new String[caseList.size()];
 		for (int i = 0; i < caseList.size(); i++) {
-			casesID[i] = "Process ID: " + caseList.get(i).getProcessDefinitionId() + "\nCase ID: "
-					+ caseList.get(i).getId() + "\nState: " + caseList.get(i).getState() + "\nRoot CaseID: "
-					+ caseList.get(i).getRootCaseId();
+			casesID[i] = caseList.get(i).getProcessDefinitionId() + "\n" + caseList.get(i).getId() + "\n"
+					+ caseList.get(i).getState() + "\n" + caseList.get(i).getRootCaseId();
 		}
 
 		if (casesID.length == 0) {
@@ -919,12 +973,14 @@ public class Connections {
 	 *            to give to the variable
 	 * @return the string containing the success or error code
 	 */
-	public final String of_invokeSetProcessVariables(final String caseID, final String variableName,
+	public final String[] of_invokeSetProcessVariable(final String caseID, final String variableName,
 			final String variableType, final String value) {
+		String[] response = new String[1];
 		if (!caseID.matches(".*\\d+.*") || caseID.equals("") || variableName.equals("") || variableType.equals("")
 				|| value.equals("")) {
 			LOGGER.error("Missing parameters");
-			return "-5";
+			response[0] = "-5";
+			return response;
 		}
 		URL url;
 		final String variableNameFinal = variableName.replace(" ", "%20");
@@ -932,7 +988,8 @@ public class Connections {
 			url = new URL(getIpServidor() + "/API/bpm/caseVariable/" + caseID + "/" + variableNameFinal);
 		} catch (MalformedURLException e) {
 			LOGGER.error("Error obtaining variable. Exception: " + e);
-			return "-6";
+			response[0] = "-6";
+			return response;
 		}
 		final String payload = "{\"type\":\"" + variableType + "\",\"value\":\"" + value + "\"}";
 		HttpURLConnection connection = null;
@@ -940,19 +997,23 @@ public class Connections {
 			connection = executePutRequest(url, payload);
 		} catch (IOException e) {
 			LOGGER.error("Unexpected error executing method. Exception: " + e);
-			return "-101";
+			response[0] = "-101";
+			return response;
 		}
 		try {
 			if (connection.getResponseCode() == SUCCESS_CODE) {
 				LOGGER.info("Variable updated");
-				return "1";
+				response[0] = "1";
+				return response;
 			} else {
 				LOGGER.error("Unexpected error executing method. Response code: " + connection.getResponseCode());
-				return "-101";
+				response[0] = "-101";
+				return response;
 			}
 		} catch (IOException e) {
 			LOGGER.error("Unexpected error executing method. Exception: " + e);
-			return "-101";
+			response[0] = "-101";
+			return response;
 		}
 	}
 
@@ -967,18 +1028,21 @@ public class Connections {
 	 *            the value to be set
 	 * @return a String with success or error code
 	 */
-	public final String of_invokeSetActivityVariable(final String taskID, final String variableName,
+	public final String[] of_invokeSetActivityVariable(final String taskID, final String variableName,
 			final String variableValue) {
+		String[] response = new String[1];
 		if (!taskID.matches(".*\\d+.*") || taskID.equals("") || variableName.equals("") || variableValue.equals("")) {
 			LOGGER.error("Missing parameters");
-			return "-5";
+			response[0] = "-5";
+			return response;
 		}
 		URL url;
 		try {
 			url = new URL(getIpServidor() + "/API/bpm/activity/" + taskID);
 		} catch (MalformedURLException e) {
 			LOGGER.error("Error obtaining activity variable. Exception: " + e);
-			return "-6";
+			response[0] = "-6";
+			return response;
 		}
 		final String payload = "{\"variables\":[{\"name\":\"" + variableName + "\",\"value\":\"" + variableValue
 				+ "\"}]}";
@@ -987,19 +1051,23 @@ public class Connections {
 			connection = executePutRequest(url, payload);
 		} catch (IOException e) {
 			LOGGER.error("Unexpected error executing method. Exception: " + e);
-			return "-101";
+			response[0] = "-101";
+			return response;
 		}
 		try {
 			if (connection.getResponseCode() == SUCCESS_CODE) {
 				LOGGER.info("Variable updated");
-				return "1";
+				response[0] = "1";
+				return response;
 			} else {
 				LOGGER.error("Unexpected error executing method. Response code: " + connection.getResponseCode());
-				return "-101";
+				response[0] = "-101";
+				return response;
 			}
 		} catch (IOException e) {
 			LOGGER.error("Unexpected error executing method. Exception: " + e);
-			return "-101";
+			response[0] = "-101";
+			return response;
 		}
 	}
 
@@ -1013,68 +1081,115 @@ public class Connections {
 	 * @return a string with the passed and not passed milestones or an error
 	 *         code
 	 */
-	public final String of_invokeGetMilestones(final String caseID, final String processID) {
-		if (!caseID.matches(".*\\d+.*") || caseID.equals("") || !processID.matches(".*\\d+.*")
-				|| processID.equals("")) {
-			LOGGER.error("Missing parameters");
-			return "-5";
-		}
-		// todas as milestones passadas
-		ArrayList<String> milestonesName;
+	public final String[] of_invokeGetMilestones(final String caseID) {
+		String processID;
+		String[] error = new String[1];
 		try {
-			milestonesName = of_invokeMilestonesNames(caseID);
+			processID = obtainProcessIDFromCaseID(caseID);
+		} catch (Exception e1) {
+			error[0] = "-101";
+			return error;
+		}
+		if (!caseID.matches(".*\\d+.*") || caseID.equals("")) {
+			LOGGER.error("Missing parameters");
+			error[0] = "-5";
+			return error;
+		}
+		// milestones passadas
+		ArrayList<String> passedMilestones;
+		try {
+			passedMilestones = getPassedMilestones(caseID);
 		} catch (IOException e) {
 			LOGGER.error("Unexpected error executing method. Exception: " + e);
-			return "-101";
+			error[0] = "-101";
+			return error;
 		} catch (JAXBException e) {
 			LOGGER.info("Error parsing JSON. Exception: " + e);
-			return "-8";
+			error[0] = "-8";
+			return error;
 		}
-		// todas as milestones
-		final ArrayList<String> everyMilestone = new ArrayList<String>();
+		// milestones atuais
+		ArrayList<String> currentMilestones = searchCurrentMilestones(caseID);
+		// futuras milestones
+		final ArrayList<String> futureMilestones = new ArrayList<String>();
 		final String[] everyStep = of_invokeGetEveryStep(processID);
 		if (everyStep[0].equals("-6")) {
 			LOGGER.error("Error obtaining milestones");
-			return "-6";
+			error[0] = "-6";
+			return error;
 		} else if (everyStep[0].equals("-101")) {
 			LOGGER.error("Unexpected error executing method");
-			return "-101";
+			error[0] = "-101";
+			return error;
 		} else if (everyStep[0].equals("-8")) {
 			LOGGER.info("Error parsing JSON");
-			return "-8";
+			error[0] = "-8";
+			return error;
 		} else {
-			int i = 0;
 			for (final String task : everyStep) {
-				if (task.contains(MILESTONE)) {
-					everyMilestone.add(task);
-					i++;
+				if (task.contains(MILESTONE) && !passedMilestones.contains(task) && !currentMilestones.contains(task)) {
+					futureMilestones.add(task);
+					futureMilestones.add("false");
+					futureMilestones.add("");
+					futureMilestones.add("0");
 				}
 			}
-			if (i == 0) {
-				LOGGER.info("Haven't reached any milestones or there are no milestones");
-				return "-1";
-			}
+
 		}
-		// milestones nao passadas
-		for (int j = 0; j < milestonesName.size(); j++) {
-			if (everyMilestone.contains(milestonesName.get(j))) {
-				everyMilestone.remove(milestonesName.get(j));
-			}
-		}
-		final Set<String> set = new HashSet<String>(milestonesName);
-		final StringBuilder sb = new StringBuilder();
-		sb.append("Milestones ultrapassadas: \n");
-		for (final String s : set) {
-			sb.append(s);
-			sb.append("\n");
-		}
-		sb.append("\nMilestones não ultrapassadas: \n");
-		for (final String s : everyMilestone) {
-			sb.append(s);
-			sb.append("\n");
-		}
+		ArrayList<String> allMilestones = new ArrayList<String>();
+		allMilestones.addAll(passedMilestones);
+		allMilestones.addAll(currentMilestones);
+		allMilestones.addAll(futureMilestones);
 		LOGGER.info("Milestones retrieved");
-		return sb.toString();
+		return allMilestones.toArray(new String[allMilestones.size()]);
+	}
+
+	/**
+	 *
+	 * @param caseID
+	 * @return
+	 * @throws Exception
+	 */
+	private String obtainProcessIDFromCaseID(final String caseID) throws Exception {
+		URL url = null;
+		Case uncase = null;
+		try {
+			url = new URL(getIpServidor() + "/API/bpm/case/" + caseID);
+			StringBuilder sbuilder = new StringBuilder();
+			sbuilder = executeGetRequest(url);
+			uncase = UNMARSH.unCase(sbuilder.toString());
+		} catch (Exception e) {
+			throw new Exception();
+		}
+		return uncase.getProcessDefinitionId();
+	}
+
+	/**
+	 *
+	 * @param caseId
+	 * @return
+	 */
+	public ArrayList<String> searchCurrentMilestones(final String caseId) {
+		URL url = null;
+		List<Task> taskList = null;
+		try {
+			url = new URL(getIpServidor() + "/API/bpm/task?p=0&c=150&f=caseId=" + caseId);
+			StringBuilder sbuilder = new StringBuilder();
+			sbuilder = executeGetRequest(url);
+			taskList = UNMARSH.taskList(sbuilder.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		ArrayList<String> milestones = new ArrayList<String>();
+		for (Task task : taskList) {
+			if (task.getName().contains(MILESTONE)) {
+				milestones.add(task.getName());
+				milestones.add("true");
+				milestones.add(task.getReached_state_date());
+				milestones.add("2");
+			}
+		}
+		return milestones;
 	}
 
 	/**
@@ -1194,20 +1309,29 @@ public class Connections {
 	 *            the version of the parent process
 	 * @return success or error code
 	 */
-	public final String of_invokeGetOverview(final String processName, final String caseID,
-			final String processVersion) {
-		if (processName.equals("") || !caseID.matches(".*\\d+.*") || caseID.equals("") || processVersion.equals("")
-				|| !processVersion.matches(".*\\d+.*")) {
+	public final String[] of_invokeGetOverview(final String caseID) {
+		String[] response = new String[1];
+		String processId;
+		try {
+			processId = obtainProcessIDFromCaseID(caseID);
+		} catch (Exception e2) {
+			response[0] = "-101";
+			return response;
+		}
+		Process process = obtainProcess(processId);
+		if (!caseID.matches(".*\\d+.*") || caseID.equals("")) {
 			LOGGER.error("Missing parameters");
-			return "-5";
+			response[0] = "-5";
+			return response;
 		}
 		URL url = null;
 		try {
-			url = new URL(getIpServidor() + "/portal/resource/processInstance/" + processName.replaceAll(" ", "%20")
-					+ "/" + processVersion + "/content/?id=" + caseID);
+			url = new URL(getIpServidor() + "/portal/resource/processInstance/"
+					+ process.getName().replaceAll(" ", "%20") + "/" + process.getVersion() + "/content/?id=" + caseID);
 		} catch (MalformedURLException e1) {
 			LOGGER.error("Error opening overview page. Exception: " + e1);
-			return "-6";
+			response[0] = "-6";
+			return response;
 		}
 		Desktop desktop = null;
 		if (Desktop.isDesktopSupported()) {
@@ -1219,14 +1343,17 @@ public class Connections {
 			try {
 				desktop.browse(url.toURI());
 				LOGGER.info("Browser opened in overview page");
-				return "1";
+				response[0] = "1";
+				return response;
 			} catch (URISyntaxException | IOException e) {
 				LOGGER.error("Unexpected error while executing method. Exception: " + e);
-				return "-101";
+				response[0] = "-101";
+				return response;
 			}
 		} else {
 			LOGGER.error("Unexpected error while executing method. No exception");
-			return "-101";
+			response[0] = "-101";
+			return response;
 		}
 	}
 
@@ -1237,7 +1364,7 @@ public class Connections {
 	 *            from which to retrieve the timers
 	 * @return the timer list or an error code
 	 */
-	public String[] of_invokeTimerEvents(String caseId) {
+	public String[] of_invokeTimerEvents(final String caseId) {
 		String[] error = new String[1];
 		if (!caseId.matches(".*\\d+.*") || caseId.equals("")) {
 			error[0] = "-5";
@@ -1296,17 +1423,20 @@ public class Connections {
 	 *            the id of the case to be deleted
 	 * @return a success or error code
 	 */
-	public String of_invokeCancelInstance(String caseId) {
+	public String[] of_invokeCancelInstance(final String caseId) {
+		String[] response = new String[1];
 		if (!caseId.matches(".*\\d+.*") || caseId.equals("")) {
 			LOGGER.error("Missing parameters");
-			return "-5";
+			response[0] = "-5";
+			return response;
 		}
 		URL url;
 		try {
 			url = new URL(getIpServidor() + "/API/bpm/case/" + caseId);
 		} catch (MalformedURLException e1) {
 			LOGGER.error("Error deleting process instance. Exception: " + e1);
-			return "-6";
+			response[0] = "-6";
+			return response;
 		}
 		String line;
 		try {
@@ -1321,10 +1451,12 @@ public class Connections {
 			}
 		} catch (IOException e1) {
 			LOGGER.error("Unexpected error executing method. Exception: " + e1);
-			return "-101";
+			response[0] = "-101";
+			return response;
 		}
 		LOGGER.info("Case deleted");
-		return "1";
+		response[0] = "1";
+		return response;
 	}
 
 	// ************************* TODO *******************************
@@ -1412,37 +1544,6 @@ public class Connections {
 	}
 
 	/**
-	 * Get the process BDM variables.
-	 *
-	 * @param caseID
-	 *            from which to extract the variables
-	 * @return an array with the variables or null
-	 * @throws IOException
-	 *             in case something goes wrong
-	 */
-	private String[] getProcessVariablesBDM(final String caseID) throws IOException {
-		URL url;
-		url = new URL(getIpServidor() + "/API/bdm/businessDataReference" + "?f=caseId=" + caseID + "&p=0&c=10");
-		StringBuilder sbuilder = new StringBuilder();
-		sbuilder = executeGetRequest(url);
-		List<BusinessData> businessDataList = null;
-		try {
-			businessDataList = UNMARSH.businessDataList(sbuilder.toString());
-		} catch (JAXBException e) {
-		}
-		if (businessDataList.size() != 0) {
-			String[] businessDataName = new String[businessDataList.size()];
-			for (int i = 0; i < businessDataList.size(); i++) {
-				businessDataName[i] = "ID: " + businessDataList.get(i).getStorageId() + "\nType: "
-						+ businessDataList.get(i).getType() + "\n" + "Info: BDM variable\n";
-			}
-			return businessDataName;
-		} else {
-			return null;
-		}
-	}
-
-	/**
 	 * Retrieve the current flowNodes.
 	 *
 	 * @param caseID
@@ -1509,15 +1610,21 @@ public class Connections {
 	 * @throws JAXBException
 	 *             in case the unmarshalling finds an error
 	 */
-	private String getUserID(final String userName) throws IOException, JAXBException {
+	private String getUserID(String userName) throws IOException, JAXBException {
 		URL url = null;
+		if (userName.contains(" ")) {
+			userName = userName.replace(" ", "%20");
+		}
 		url = new URL(getIpServidor() + "/API/identity/user?f=userName=" + userName);
 		StringBuilder sbuilder = new StringBuilder();
 		sbuilder = executeGetRequest(url);
 		List<User> userList = null;
 		userList = UNMARSH.userList(sbuilder.toString());
 		String userID = null;
-		for (final User user : userList) {
+		if (userName.contains("%20")) {
+			userName = userName.replaceAll("%20", " ");
+		}
+		for (User user : userList) {
 			if (user.getUserName().equals(userName)) {
 				userID = user.getId();
 			}
@@ -1886,9 +1993,8 @@ public class Connections {
 	 * @throws JAXBException
 	 *             in case there is a problem with JSON
 	 */
-	private ArrayList<String> of_invokeMilestonesNames(final String caseID) throws IOException, JAXBException {
-		URL url = null;
-		url = new URL(getIpServidor() + "/API/bpm/archivedFlowNode?p=0&f=caseId=" + caseID + "&o=archivedDate");
+	private ArrayList<String> getPassedMilestones(final String caseID) throws IOException, JAXBException {
+		URL url = new URL(getIpServidor() + "/API/bpm/archivedTask?p=0&c=200&f=caseId=" + caseID + "&o=archivedDate");
 		StringBuilder sbuilder = new StringBuilder();
 		sbuilder = executeGetRequest(url);
 		List<Task> taskList = null;
@@ -1904,11 +2010,6 @@ public class Connections {
 		}
 		LOGGER.info("Milestones details obtained");
 		return milestones;
-	}
-	
-	public String[] createWorkFlowDafuq(){
-		
-		return null;
 	}
 
 	/**
@@ -2012,54 +2113,7 @@ public class Connections {
 	public void setUserName(String userName1) {
 		this.userName = userName1;
 	}
-	
+
 	// ***********************testes************************ //
 
-	public final String createWorkflow(final String processName) {
-		URL url = null;
-		try {
-			url = new URL(getIpServidor() + "/API/bpm/process?s=" + processName);
-		} catch (MalformedURLException e1) {
-			LOGGER.error("Error retrieving process contract. Exception: " + e1);
-			return null;
-		}
-		StringBuilder sbuilder = new StringBuilder();
-		try {
-			sbuilder = executeGetRequest(url);
-		} catch (IOException e1) {
-			LOGGER.error("Unexpected error executing method. Exception: " + e1);
-			return null;
-		}
-		Process process = null;
-		try {
-			process = UNMARSH.process(sbuilder.toString());
-		} catch (JAXBException e) {
-			LOGGER.error("Error parsing JSON. Exception:" + e);
-			return null;
-		}
-		
-		String processID = process.getId();
-		URL url2;
-		try {
-			url2 = new URL(getIpServidor() + "/API/bpm/case");
-		} catch (MalformedURLException e1) {
-			LOGGER.error("Error retrieving process contract. Exception: " + e1);
-			return null;
-		}
-		String line = null;
-		try {
-			HttpURLConnection con = executePostRequest(url2, "");
-			if(con.getResponseCode() == 200){
-				final BufferedReader breader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-				while ((line = breader.readLine()) != null) {
-					sbuilder.append(line + '\n');
-				}
-			};
-		} catch (IOException e) {
-			LOGGER.error("Error: " + e);
-			return null;
-		}
-		return null;
-	}
-	
 }

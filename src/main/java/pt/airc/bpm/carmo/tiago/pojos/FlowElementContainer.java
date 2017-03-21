@@ -8,7 +8,7 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
  * @author Tiago Carmo
  *
  */
-@JsonPropertyOrder({ "id", "activities" })
+@JsonPropertyOrder({ "id", "activities", "transitions" })
 public class FlowElementContainer {
 	/**
 	 *
@@ -20,6 +20,12 @@ public class FlowElementContainer {
 	 */
 	@JsonProperty("ativities")
 	private Activity[] activities;
+
+	/**
+	 *
+	 */
+	@JsonProperty("transitions")
+	private Transition[] transitions;
 
 	/**
 	 *
@@ -53,6 +59,22 @@ public class FlowElementContainer {
 	 */
 	public void setActivities(final Activity[] activities1) {
 		this.activities = activities1;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public Transition[] getTransitions() {
+		return transitions;
+	}
+
+	/**
+	 *
+	 * @param transitions
+	 */
+	public void setTransitions(Transition[] transitions) {
+		this.transitions = transitions;
 	}
 
 }

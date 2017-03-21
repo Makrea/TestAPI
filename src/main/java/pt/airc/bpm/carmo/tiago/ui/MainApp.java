@@ -221,8 +221,8 @@ public class MainApp {
 	 *            the process version
 	 * @return a string with error or success code
 	 */
-	public final String of_invokeCreateWorkflow(final String processName, final String caseID, final String version) {
-		return request.of_invokeCreateWorkflow(processName, caseID, version);
+	public final String of_invokeCreateWorkflow(final String processID) {
+		return request.of_invokeCreateWorkflow(processID);
 
 	}
 
@@ -267,9 +267,9 @@ public class MainApp {
 	 *            the variable value
 	 * @return a string with success or error code
 	 */
-	public final String of_invokeSetProcessVariables(final String caseID, final String variableName,
+	public final String[] of_invokeSetProcessVariable(final String caseID, final String variableName,
 			final String variableType, final String value) {
-		return this.request.of_invokeSetProcessVariables(caseID, variableName, variableType, value);
+		return this.request.of_invokeSetProcessVariable(caseID, variableName, variableType, value);
 	}
 
 	/**
@@ -280,18 +280,6 @@ public class MainApp {
 	 */
 	public final String[] of_invokeGetStepActual(final String caseID) {
 		return request.of_invokeGetStepActual(caseID);
-	}
-
-	/**
-	 *
-	 * @param bdmType
-	 *            the bdm type
-	 * @param bdmID
-	 *            the bdm id
-	 * @return the bdm variables
-	 */
-	public final String bdmVariables(final String bdmType, final String bdmID) {
-		return request.of_invokeGetProcessBDMVariable(bdmType, bdmID);
 	}
 
 	/**
@@ -322,8 +310,8 @@ public class MainApp {
 	 *            the process id from which to extract all the milestones
 	 * @return all the milestones (passed and not)
 	 */
-	public final String of_invokeGetMilestones(final String caseID, final String processID) {
-		return request.of_invokeGetMilestones(caseID, processID);
+	public final String[] of_invokeGetMilestones(final String caseID) {
+		return request.of_invokeGetMilestones(caseID);
 	}
 
 	/**
@@ -334,7 +322,7 @@ public class MainApp {
 	 *            user name to assign task to
 	 * @return a string with success or error code
 	 */
-	public final String of_invokeReassignTaskCandidates(final String taskID, final String userName) {
+	public final String[] of_invokeReassignTaskCandidate(final String taskID, final String userName) {
 		return request.of_invokeReassignTaskCandidate(taskID, userName);
 	}
 
@@ -365,7 +353,7 @@ public class MainApp {
 	 *            the variable value to be set
 	 * @return a string with success or error code
 	 */
-	public final String of_invokeSetActivityVariable(final String taskID, final String variableName,
+	public final String[] of_invokeSetActivityVariable(final String taskID, final String variableName,
 			final String variableValue) {
 		return this.request.of_invokeSetActivityVariable(taskID, variableName, variableValue);
 	}
@@ -423,8 +411,8 @@ public class MainApp {
 	 *            from which to get the details
 	 * @return the variable details or error code
 	 */
-	public final String of_invokeGetActivityVariable(final String taskId, final String variableName) {
-		return this.request.of_invokeGetActivityVariable(taskId, variableName);
+	public final String[] of_invokeGetActivityVariables(final String taskId) {
+		return this.request.of_invokeGetActivityVariables(taskId);
 	}
 
 	/**
@@ -523,9 +511,8 @@ public class MainApp {
 	 *            the process version
 	 * @return a string with an error or success code
 	 */
-	public final String of_invokeGetOverview(final String processName, final String caseID,
-			final String processVersion) {
-		return this.request.of_invokeGetOverview(processName, caseID, processVersion);
+	public final String[] of_invokeGetOverview(final String caseID) {
+		return this.request.of_invokeGetOverview(caseID);
 	}
 
 	/**
@@ -544,7 +531,7 @@ public class MainApp {
 	 *            the case id
 	 * @return a string with error or success code
 	 */
-	public String of_invokeCancelInstance(String caseId) {
+	public String[] of_invokeCancelInstance(String caseId) {
 		return this.request.of_invokeCancelInstance(caseId);
 	}
 

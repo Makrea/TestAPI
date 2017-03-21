@@ -7,7 +7,6 @@ import com.google.gson.Gson;
 
 import pt.airc.bpm.carmo.tiago.pojos.ActivityVariable;
 import pt.airc.bpm.carmo.tiago.pojos.ActorMember;
-import pt.airc.bpm.carmo.tiago.pojos.BusinessData;
 import pt.airc.bpm.carmo.tiago.pojos.Case;
 import pt.airc.bpm.carmo.tiago.pojos.CaseVariable;
 import pt.airc.bpm.carmo.tiago.pojos.Contract;
@@ -93,26 +92,6 @@ public class UnmarshallerC {
 	}
 
 	/**
-	 * Unmarshall BDM list to an arryList.
-	 *
-	 * @param msg
-	 *            json message received
-	 * @return list of bdm variables
-	 * @throws JAXBException
-	 *             in case there is a problem
-	 */
-	@SuppressWarnings(WARNING)
-	public final List<BusinessData> businessDataList(final String msg) throws JAXBException {
-		final Gson gson = new Gson();
-
-		final TypeToken<List<BusinessData>> token = new TypeToken<List<BusinessData>>() {
-		};
-		final List<BusinessData> businessDataList = gson.fromJson(msg, token.getType());
-
-		return businessDataList;
-	}
-
-	/**
 	 * Unmarshall Tasks to an arrayList.
 	 *
 	 * @param msg
@@ -130,6 +109,20 @@ public class UnmarshallerC {
 		final List<Task> taskList = gson.fromJson(msg, token.getType());
 
 		return taskList;
+	}
+	
+	/**
+	 *
+	 * @param msg
+	 * @return
+	 * @throws JAXBException
+	 */
+	public final Case unCase(final String msg) throws JAXBException {
+		final Gson gson = new Gson();
+
+		final Case unCase = gson.fromJson(msg, Case.class);
+
+		return unCase;
 	}
 
 	/**

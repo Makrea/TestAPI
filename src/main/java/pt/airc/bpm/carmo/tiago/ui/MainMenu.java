@@ -41,10 +41,10 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 	/**
 	 *
 	 */
-	private final JButton btnExitMenu, btnProcesses, btnBdmVariables, searchTask, btnTimer, btnVariable, btnCases,
-			btnStartCase, btnLogout, btnTasks, btnAssignTask, btnRunTask, btnRunTaskP, btnStart, btnDescription,
-			btnActivityVariable, btnStepItems, btnProcessFields, btnSetVariable, btnGetCandidates, btnSetActivityVar,
-			btnMilestone, btnAllSteps, btnDocumentUrl, btnOverview, btnCancelPi;
+	private final JButton btnExitMenu, btnProcesses, searchTask, btnTimer, btnVariable, btnCases, btnStartCase,
+			btnLogout, btnTasks, btnAssignTask, btnRunTask, btnRunTaskP, btnStart, btnDescription, btnActivityVariable,
+			btnStepItems, btnProcessFields, btnSetVariable, btnGetCandidates, btnSetActivityVar, btnMilestone,
+			btnAllSteps, btnDocumentUrl, btnOverview, btnCancelPi;
 	/**
 	 *
 	 */
@@ -56,8 +56,8 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 	/**
 	 *
 	 */
-	private final JTextField fieldID, fieldProcess, nameField, versionField, bdmType, bdmID, taskName, userName,
-			textTaskID, approvedField, textVariableName, txtVariableValue, txtVariableType, urlField, docName;
+	private final JTextField fieldID, fieldProcess, nameField, versionField, taskName, userName, textTaskID,
+			approvedField, textVariableName, txtVariableValue, txtVariableType, urlField, docName;
 
 	/**
 	 *
@@ -77,7 +77,7 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 		btnExitMenu = new JButton("Exit");
 		btnExitMenu.setForeground(Color.BLACK);
 		btnExitMenu.setBackground(Color.WHITE);
-		btnExitMenu.setBounds(179, 121, 89, 23);
+		btnExitMenu.setBounds(191, 221, 89, 23);
 		final Image imageExit = new ImageIcon(this.getClass().getResource("/exit.png")).getImage();
 		btnExitMenu.setIcon(new ImageIcon(imageExit));
 		btnExitMenu.setFont(new Font("Cambria Math", Font.PLAIN, 12));
@@ -153,7 +153,7 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 		add(scroll2);
 
 		btnLogout = new JButton("Logout");
-		btnLogout.setBounds(44, 121, 89, 23);
+		btnLogout.setBounds(103, 221, 89, 23);
 		btnLogout.setForeground(Color.BLACK);
 		btnLogout.setBackground(Color.WHITE);
 		final Image imageLogout = new ImageIcon(this.getClass().getResource("/logout.png")).getImage();
@@ -197,25 +197,6 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 		nameField.setBounds(385, 302, 189, 20);
 		add(nameField);
 		nameField.setColumns(10);
-
-		bdmType = new JTextField();
-		bdmType.setText("BDM Type");
-		bdmType.setToolTipText("BDM Type");
-		bdmType.setBounds(103, 208, 105, 20);
-		add(bdmType);
-		bdmType.setColumns(10);
-
-		bdmID = new JTextField();
-		bdmID.setText("BDM ID");
-		bdmID.setToolTipText("BDM ID");
-		bdmID.setBounds(218, 208, 62, 20);
-		add(bdmID);
-		bdmID.setColumns(10);
-
-		btnBdmVariables = new JButton("BDM Variables");
-		btnBdmVariables.setBounds(103, 239, 177, 23);
-		btnBdmVariables.addActionListener(this);
-		add(btnBdmVariables);
 
 		btnTimer = new JButton("Timer");
 		btnTimer.setBounds(206, 11, 62, 23);
@@ -293,7 +274,7 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 		txtVariableValue = new JTextField();
 		txtVariableValue.setToolTipText("Variable Value");
 		txtVariableValue.setText("Variable Value");
-		txtVariableValue.setBounds(491, 399, 83, 20);
+		txtVariableValue.setBounds(398, 399, 83, 20);
 		add(txtVariableValue);
 		txtVariableValue.setColumns(10);
 
@@ -305,7 +286,7 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 		txtVariableType.setColumns(10);
 
 		btnSetVariable = new JButton("Set Variable");
-		btnSetVariable.setBounds(398, 398, 83, 23);
+		btnSetVariable.setBounds(491, 396, 83, 23);
 		btnSetVariable.addActionListener(this);
 		add(btnSetVariable);
 
@@ -339,7 +320,7 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 		btnAllSteps.setBounds(103, 431, 78, 23);
 		btnAllSteps.addActionListener(this);
 		add(btnAllSteps);
-		
+
 		btnDocumentUrl = new JButton("Add Doc");
 		btnDocumentUrl.setBounds(10, 173, 83, 23);
 		btnDocumentUrl.addActionListener(this);
@@ -494,8 +475,7 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 		} else if (event.getSource() == this.btnStartCase) {
 
 			txtArea.setText("");
-			String response = this.app.of_invokeCreateWorkflow(this.nameField.getText(),
-					this.getFieldProcess().getText(), this.versionField.getText());
+			String response = this.app.of_invokeCreateWorkflow(this.getFieldProcess().getText());
 			if (response.equals("-5")) {
 				JOptionPane.showMessageDialog(null,
 						"Missing/Wrong Parameters.\nParameters needed: Process Name, Process ID, Process Version",
@@ -513,15 +493,14 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 		} else if (event.getSource() == this.btnOverview) {
 
 			txtArea.setText("");
-			String response = this.app.of_invokeGetOverview(this.nameField.getText(), this.fieldID.getText(),
-					this.versionField.getText());
-			if (response.equals("-5")) {
+			String response[] = this.app.of_invokeGetOverview(this.fieldID.getText());
+			if (response[0].equals("-5")) {
 				JOptionPane.showMessageDialog(null,
 						"Missing/Wrong Parameters.\nParameters needed: Process Name, Case ID, Process Version", ERROR,
 						JOptionPane.ERROR_MESSAGE);
-			} else if (response.equals("-6")) {
+			} else if (response[0].equals("-6")) {
 				JOptionPane.showMessageDialog(null, "Error opening overview page", ERROR, JOptionPane.ERROR_MESSAGE);
-			} else if (response.equals("-101")) {
+			} else if (response[0].equals("-101")) {
 				JOptionPane.showMessageDialog(null, "Unexpected error while executing the method", ERROR,
 						JOptionPane.ERROR_MESSAGE);
 			} else {
@@ -570,31 +549,10 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 			} else {
 				for (final String variable : taskList) {
 					contractsArea.append(variable);
-					contractsArea.append("\n\n");
+					contractsArea.append("\n");
 				}
 			}
 
-			// receber variáveis bdm
-		} else if (event.getSource() == this.btnBdmVariables) {
-
-			txtArea.setText("");
-			String response = this.app.bdmVariables(this.bdmType.getText(), this.bdmID.getText());
-			if (response.equals("-6")) {
-				JOptionPane.showMessageDialog(null, "Error obtaining the variable details", ERROR,
-						JOptionPane.ERROR_MESSAGE);
-			} else if (response.equals("-101")) {
-				JOptionPane.showMessageDialog(null, "Unexpected error while executing the method", ERROR,
-						JOptionPane.ERROR_MESSAGE);
-			} else if (response.equals("-5")) {
-				JOptionPane.showMessageDialog(null, "Missing/Wrong Parameters.\nParameters needed: BDM Type, BDM ID",
-						ERROR, JOptionPane.ERROR_MESSAGE);
-			} else if (response.equals("-1")) {
-				txtArea.setText("No such BDM variable");
-			} else {
-				txtArea.append(response);
-			}
-
-			// obter timer events
 		} else if (event.getSource() == this.btnTimer) {
 
 			contractsArea.setText("");
@@ -644,16 +602,16 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 			// atribuir tarefa a ator
 		} else if (event.getSource() == this.btnAssignTask) {
 
-			String assign = this.app.of_invokeReassignTaskCandidates(this.textTaskID.getText(),
+			String[] assign = this.app.of_invokeReassignTaskCandidate(this.textTaskID.getText(),
 					this.userName.getText());
-			if (assign.equals("1")) {
+			if (assign[0].equals("1")) {
 				JOptionPane.showMessageDialog(null, "Task assigned", "Success", JOptionPane.INFORMATION_MESSAGE);
-			} else if (assign.equals("-5")) {
+			} else if (assign[0].equals("-5")) {
 				JOptionPane.showMessageDialog(null, "Missing/Wrong Parameters.\nParameters needed: Task ID, User Name",
 						"Error", JOptionPane.ERROR_MESSAGE);
-			} else if (assign.equals("-6")) {
+			} else if (assign[0].equals("-6")) {
 				JOptionPane.showMessageDialog(null, "Error defining new candidate", ERROR, JOptionPane.ERROR_MESSAGE);
-			} else if (assign.equals("-101")) {
+			} else if (assign[0].equals("-101")) {
 				JOptionPane.showMessageDialog(null, "Unexpected error while executing method", ERROR,
 						JOptionPane.ERROR_MESSAGE);
 			}
@@ -727,24 +685,26 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 		} else if (event.getSource() == this.btnActivityVariable) {
 
 			txtArea.setText("");
-			String response = this.app.of_invokeGetActivityVariable(this.textTaskID.getText(),
-					this.textVariableName.getText());
-			if (response.equals("-6")) {
-				JOptionPane.showMessageDialog(null, "Error obtaining variable details", ERROR,
-						JOptionPane.ERROR_MESSAGE);
-			} else if (response.equals("-5")) {
-				JOptionPane.showMessageDialog(null,
-						"Missing/Wrong Parameters.\nParameters needed: Task ID, Variable Name", ERROR,
-						JOptionPane.ERROR_MESSAGE);
-			} else if (response.equals("-8")) {
-				JOptionPane.showMessageDialog(null, "Error parsing JSON", ERROR, JOptionPane.ERROR_MESSAGE);
-			} else if (response.equals("-101")) {
-				JOptionPane.showMessageDialog(null, "Unexpected error while executing method", ERROR,
-						JOptionPane.ERROR_MESSAGE);
-			} else if (response.equals("-1")) {
-				txtArea.setText("No such variable");
+			String[] response = this.app.of_invokeGetActivityVariables(this.textTaskID.getText());
+			if (response.length != 0) {
+				if (response[0].equals("-6")) {
+					JOptionPane.showMessageDialog(null, "Error obtaining variable details", ERROR,
+							JOptionPane.ERROR_MESSAGE);
+				} else if (response[0].equals("-5")) {
+					JOptionPane.showMessageDialog(null, "Missing/Wrong Parameters.\nParameters needed: Task ID", ERROR,
+							JOptionPane.ERROR_MESSAGE);
+				} else if (response.equals("-8")) {
+					JOptionPane.showMessageDialog(null, "Error parsing JSON", ERROR, JOptionPane.ERROR_MESSAGE);
+				} else if (response[0].equals("-101")) {
+					JOptionPane.showMessageDialog(null, "Unexpected error while executing method", ERROR,
+							JOptionPane.ERROR_MESSAGE);
+				} else {
+					for (String var : response) {
+						txtArea.append(var + "\n");
+					}
+				}
 			} else {
-				txtArea.append(response);
+				txtArea.setText("No variables");
 			}
 
 			// receber inputs necessários a execução de tarefa
@@ -794,18 +754,18 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 			// definição de valor de variáveis de processo
 		} else if (event.getSource() == this.btnSetVariable) {
 
-			String response = this.app.of_invokeSetProcessVariables(this.fieldID.getText(),
+			String response[] = this.app.of_invokeSetProcessVariable(this.fieldID.getText(),
 					this.textVariableName.getText(), this.txtVariableType.getText(), this.txtVariableValue.getText());
-			if (response.equals("-6")) {
+			if (response[0].equals("-6")) {
 				JOptionPane.showMessageDialog(null, "Error obtaining variable", ERROR, JOptionPane.ERROR_MESSAGE);
-			} else if (response.equals("-5")) {
+			} else if (response[0].equals("-5")) {
 				JOptionPane.showMessageDialog(null,
 						"Missing/Wrong Parameters.\nParameters needed: Case ID, Variable Name, Variable Type, Variable Value",
 						ERROR, JOptionPane.ERROR_MESSAGE);
-			} else if (response.equals("-101")) {
+			} else if (response[0].equals("-101")) {
 				JOptionPane.showMessageDialog(null, "Unexpected error while executing method", ERROR,
 						JOptionPane.ERROR_MESSAGE);
-			} else if (response.equals("1")) {
+			} else if (response[0].equals("1")) {
 				JOptionPane.showMessageDialog(null, "Variable updated", "Success", JOptionPane.INFORMATION_MESSAGE);
 			}
 
@@ -831,19 +791,19 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 			// definir valor de variavel de tarefa
 		} else if (event.getSource() == this.btnSetActivityVar) {
 
-			String response = this.app.of_invokeSetActivityVariable(this.textTaskID.getText(),
+			String[] response = this.app.of_invokeSetActivityVariable(this.textTaskID.getText(),
 					this.textVariableName.getText(), this.txtVariableValue.getText());
-			if (response.equals("-5")) {
+			if (response[0].equals("-5")) {
 				JOptionPane.showMessageDialog(null,
 						"Missing/Wrong Parameters.\nParameters needed: Task ID, Variable Name, Variable Value", ERROR,
 						JOptionPane.ERROR_MESSAGE);
-			} else if (response.equals("-6")) {
+			} else if (response[0].equals("-6")) {
 				JOptionPane.showMessageDialog(null, "Error obtaining activity variable", ERROR,
 						JOptionPane.ERROR_MESSAGE);
-			} else if (response.equals("-101")) {
+			} else if (response[0].equals("-101")) {
 				JOptionPane.showMessageDialog(null, "Unexpected error during method execution", ERROR,
 						JOptionPane.ERROR_MESSAGE);
-			} else if (response.equals("1")) {
+			} else if (response[0].equals("1")) {
 				JOptionPane.showMessageDialog(null, "Task updated", "Success", JOptionPane.INFORMATION_MESSAGE);
 			}
 
@@ -851,22 +811,25 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 		} else if (event.getSource() == this.btnMilestone) {
 
 			txtArea.setText("");
-			String milestones = this.app.of_invokeGetMilestones(this.fieldID.getText(), this.fieldProcess.getText());
-			if (milestones.equals("-1")) {
+			String[] milestones = this.app.of_invokeGetMilestones(this.fieldID.getText());
+			if (milestones[0].equals("-1")) {
 				JOptionPane.showMessageDialog(null, "Haven't reached any milestones or there are no milestones", "Info",
 						JOptionPane.INFORMATION_MESSAGE);
-			} else if (milestones.equals("-5")) {
+			} else if (milestones[0].equals("-5")) {
 				JOptionPane.showMessageDialog(null, "Missing/Wrong Parameters.\nParameters needed: Case ID, Process ID",
 						"Error", JOptionPane.ERROR_MESSAGE);
-			} else if (milestones.equals("-6")) {
+			} else if (milestones[0].equals("-6")) {
 				JOptionPane.showMessageDialog(null, "Error obtaining milestones", "Error", JOptionPane.ERROR_MESSAGE);
-			} else if (milestones.equals("-8")) {
+			} else if (milestones[0].equals("-8")) {
 				JOptionPane.showMessageDialog(null, "Error parsing JSON", "Error", JOptionPane.ERROR_MESSAGE);
-			} else if (milestones.equals("-101")) {
+			} else if (milestones[0].equals("-101")) {
 				JOptionPane.showMessageDialog(null, "Unexpected error while executing the method", "Error",
 						JOptionPane.ERROR_MESSAGE);
 			} else {
-				txtArea.append(milestones);
+				for (String milestone : milestones) {
+					txtArea.append(milestone);
+					txtArea.append("\n");
+				}
 			}
 
 			// receber todos os passos do workflow
@@ -919,14 +882,14 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 		} else if (event.getSource() == this.btnCancelPi) {
 
 			contractsArea.setText("");
-			String response = this.app.of_invokeCancelInstance(this.fieldID.getText());
-			if (response.equals("-5")) {
+			String[] response = this.app.of_invokeCancelInstance(this.fieldID.getText());
+			if (response[0].equals("-5")) {
 				JOptionPane.showMessageDialog(null, "Missing/Wrong Parameters.\n Parameters needed: CaseID", "Error",
 						JOptionPane.ERROR_MESSAGE);
-			} else if (response.equals("-6")) {
+			} else if (response[0].equals("-6")) {
 				JOptionPane.showMessageDialog(null, "Error deleting Process Instance", "Error",
 						JOptionPane.ERROR_MESSAGE);
-			} else if (response.equals("-101")) {
+			} else if (response[0].equals("-101")) {
 				JOptionPane.showMessageDialog(null, "Unexpected error while executing the method", "Error",
 						JOptionPane.ERROR_MESSAGE);
 			} else {

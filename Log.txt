@@ -1,23 +1,27 @@
-2017-03-09 15:53:56,237 [ERROR] LogIn class - Server unavailable while logging in
-2017-03-09 15:54:18,798 [ERROR] LogIn class - Unsuccessfull login
-2017-03-09 15:54:34,869 [ERROR] LogIn class - Unsuccessfull login
-2017-03-09 15:54:51,406 [INFO] LogIn class - Login successfull. User: helen.kelly
-2017-03-09 15:54:52,603 [INFO] Connections class - Cases retrieved
-2017-03-09 15:55:01,478 [ERROR] Connections class - Missing parameters
-2017-03-09 15:55:04,299 [INFO] Connections class - Processes retrieved
-2017-03-09 15:55:11,169 [INFO] Connections class - Milestones details obtained
-2017-03-09 15:55:11,491 [INFO] Connections class - Steps retrieved
-2017-03-09 15:55:11,492 [INFO] Connections class - Milestones retrieved
-2017-03-09 15:55:24,145 [INFO] Connections class - Tasks obtained
-2017-03-09 15:55:40,396 [INFO] Connections class - Cases retrieved
-2017-03-09 15:55:45,820 [INFO] Connections class - Processes retrieved
-2017-03-09 15:55:53,230 [INFO] Connections class - Contract retrieved
-2017-03-09 15:56:04,389 [INFO] Connections class - Case started
-2017-03-09 15:56:12,271 [INFO] Connections class - Tasks obtained
-2017-03-09 15:56:17,762 [INFO] Connections class - Milestones details obtained
-2017-03-09 15:56:17,917 [INFO] Connections class - Steps retrieved
-2017-03-09 15:56:17,918 [INFO] Connections class - Milestones retrieved
-2017-03-09 15:59:44,593 [INFO] Connections class - Steps retrieved
-2017-03-09 16:03:09,268 [INFO] Connections class - Milestones details obtained
-2017-03-09 16:03:09,434 [INFO] Connections class - Steps retrieved
-2017-03-09 16:03:09,434 [INFO] Connections class - Milestones retrieved
+2017-03-20 16:56:27,030 [ERROR] LogIn class - Server unavailable while logging in
+2017-03-20 16:56:33,486 [INFO] LogIn class - Login successfull. User: wpsadmin
+2017-03-20 16:56:34,379 [INFO] Connections class - Cases retrieved
+2017-03-20 16:57:06,592 [ERROR] Connections class - Missing parameters
+2017-03-20 16:57:08,936 [INFO] Connections class - Candidate obtained
+2017-03-20 16:57:08,974 [INFO] Connections class - User ids obtained
+2017-03-20 16:57:08,978 [INFO] Connections class - String built
+2017-03-20 16:57:09,002 [INFO] Connections class - Tasks obtained
+2017-03-20 16:57:14,476 [INFO] Connections class - Archived tasks obtained
+2017-03-20 16:57:21,568 [ERROR] Connections class - Missing parameters
+2017-03-20 16:58:02,523 [INFO] Connections class - Variable details retrieved
+2017-03-20 16:58:02,537 [INFO] Connections class - Variable details retrieved
+2017-03-20 16:58:28,217 [INFO] Connections class - Variable details retrieved
+2017-03-20 16:58:28,233 [INFO] Connections class - Variable details retrieved
+2017-03-20 16:58:47,127 [INFO] Connections class - Variable updated
+2017-03-20 16:58:49,280 [INFO] Connections class - Variable details retrieved
+2017-03-20 16:58:49,345 [INFO] Connections class - Variable details retrieved
+2017-03-20 17:04:14,838 [ERROR] Connections class - Missing parameters
+2017-03-20 17:04:16,674 [INFO] Connections class - Cases retrieved
+2017-03-20 17:04:20,587 [INFO] Connections class - Candidate obtained
+2017-03-20 17:04:20,622 [INFO] Connections class - User ids obtained
+2017-03-20 17:04:20,622 [INFO] Connections class - String built
+2017-03-20 17:04:20,647 [INFO] Connections class - Tasks obtained
+2017-03-20 17:04:30,117 [INFO] Connections class - Task assigned to user Marisa Sampaio
+2017-03-20 17:04:31,673 [INFO] Connections class - Actor name obtained
+2017-03-20 17:05:11,701 [INFO] Connections class - Logout successfull. Exit app
+2017-03-20 17:05:11,701 [INFO] MainApp class - Logout successfull. Exit app
