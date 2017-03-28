@@ -178,11 +178,13 @@ public class Connections {
 	 *            the version of the process
 	 * @return string with error or success code
 	 */
-	public final String of_invokeCreateWorkflow(final String processID) {
+	public final String[] of_invokeCreateWorkflow(final String processID) {
 		Process process = obtainProcess(processID);
+		String[] error = new String[1];
 		if (!processID.matches(".*\\d+.*") || processID.equals("")) {
 			LOGGER.error("Missing parameters");
-			return "-5";
+			error[0] = "-5";
+			return error;
 		}
 		URL url = null;
 		try {
@@ -190,7 +192,8 @@ public class Connections {
 					+ process.getVersion() + "/content/?id=" + processID);
 		} catch (MalformedURLException e1) {
 			LOGGER.error("Error starting case. Exception: " + e1);
-			return "-6";
+			error[0] = "-6";
+			return error;
 		}
 		Desktop desktop = null;
 		if (Desktop.isDesktopSupported()) {
@@ -202,14 +205,17 @@ public class Connections {
 			try {
 				desktop.browse(url.toURI());
 				LOGGER.info("Browser Opened in instantiation form");
-				return "1";
+				error[0] = "1";
+				return error;
 			} catch (URISyntaxException | IOException e) {
 				LOGGER.error("Unexpected error while executing method. Exception: " + e);
-				return "-101";
+				error[0] = "-101";
+				return error;
 			}
 		} else {
 			LOGGER.error("Unexpected error while executing method. No exception");
-			return "-101";
+			error[0] = "-101";
+			return error;
 		}
 
 	}
@@ -227,20 +233,33 @@ public class Connections {
 	 *            the id of the task to be run
 	 * @return a string with error or success codes
 	 */
-	public final String of_invokeDispatchStep(final String processName, final String processVersion,
-			final String taskName, final String taskID) {
-		if (processName.equals("") || processVersion.equals("") || taskName.equals("") || !taskID.matches(".*\\d+.*")
-				|| taskID.equals("")) {
+	public final String[] of_invokeDispatchStep(final String taskID) {
+		String[] error = new String[1];
+		Process process = null;
+		Task task = null;
+		try {
+			task = obtainTaskFromID(taskID);
+			process = obtainProcessFromTaskID(taskID);
+		} catch (IOException e2) {
+			error[0] = "-101";
+			return error;
+		} catch (JAXBException e2) {
+			error[0] = "-6";
+			return error;
+		}
+		if (!taskID.matches(".*\\d+.*") || taskID.equals("")) {
 			LOGGER.error("Missing parameters");
-			return "-5";
+			error[0] = "-5";
+			return error;
 		}
 		URL url;
 		try {
-			url = new URL(getIpServidor() + "/portal/resource/taskInstance/" + processName.replace(" ", "%20") + "/"
-					+ processVersion + "/" + taskName.replace(" ", "%20") + "/content/?id=" + taskID);
+			url = new URL(getIpServidor() + "/portal/resource/taskInstance/" + process.getName().replace(" ", "%20")
+					+ "/" + process.getVersion() + "/" + task.getName().replace(" ", "%20") + "/content/?id=" + taskID);
 		} catch (MalformedURLException e1) {
 			LOGGER.error("Error opening browser on task. Exception: " + e1);
-			return "-6";
+			error[0] = "-6";
+			return error;
 		}
 		Desktop desktop = null;
 		if (Desktop.isDesktopSupported()) {
@@ -252,15 +271,37 @@ public class Connections {
 			try {
 				desktop.browse(url.toURI());
 				LOGGER.info("Browser opened on task");
-				return "1";
+				error[0] = "1";
+				return error;
 			} catch (URISyntaxException | IOException e) {
 				LOGGER.error("Unexpected error while executing method. Exception: " + e);
-				return "-101";
+				error[0] = "-101";
+				return error;
 			}
 		} else {
 			LOGGER.error("Unexpected error while executing method");
-			return "-101";
+			error[0] = "-6";
+			return error;
 		}
+	}
+
+	private Task obtainTaskFromID(String taskID) throws IOException, JAXBException {
+		URL url = new URL(getIpServidor() + "/API/bpm/task/" + taskID);
+		StringBuilder sbuilder = new StringBuilder();
+		sbuilder = executeGetRequest(url);
+		Task task = null;
+		task = UNMARSH.task(sbuilder.toString());
+		return task;
+	}
+
+	private Process obtainProcessFromTaskID(String taskID) throws IOException, JAXBException {
+		Task task = obtainTaskFromID(taskID);
+		URL url = new URL(getIpServidor() + "/API/bpm/process/" + task.getProcessId());
+		StringBuilder sbuilder = new StringBuilder();
+		sbuilder = executeGetRequest(url);
+		Process process = null;
+		process = UNMARSH.process(sbuilder.toString());
+		return process;
 	}
 
 	/**
@@ -529,7 +570,8 @@ public class Connections {
 							.toString();
 				}
 			} else {
-				responseItems[i] = inputs[i].getName() + "\n" + inputs[i].getType() + "\n" + inputs[i].getDescription();
+				responseItems[i] = inputs[i].getName() + "\n" + inputs[i].getType() + "\n" + inputs[i].getDescription()
+						+ "\n";
 			}
 		}
 		if (responseItems.length == 0) {
@@ -981,10 +1023,9 @@ public class Connections {
 	 * @return the string containing the success or error code
 	 */
 	public final String[] of_invokeSetProcessVariable(final String caseID, final String variableName,
-			final String variableType, final String value) {
+			final String value) {
 		String[] response = new String[1];
-		if (!caseID.matches(".*\\d+.*") || caseID.equals("") || variableName.equals("") || variableType.equals("")
-				|| value.equals("")) {
+		if (!caseID.matches(".*\\d+.*") || caseID.equals("") || variableName.equals("") || value.equals("")) {
 			LOGGER.error("Missing parameters");
 			response[0] = "-5";
 			return response;
@@ -998,7 +1039,16 @@ public class Connections {
 			response[0] = "-6";
 			return response;
 		}
-		final String payload = "{\"type\":\"" + variableType + "\",\"value\":\"" + value + "\"}";
+		CaseVariable activity = null;
+		try {
+			StringBuilder conn = executeGetRequest(url);
+			activity = UNMARSH.caseVariable(conn.toString());
+		} catch (IOException | JAXBException e1) {
+			LOGGER.error("Unexpected error executing method. Exception: " + e1);
+			response[0] = "-101";
+			return response;
+		}
+		final String payload = "{\"type\":\"" + activity.getType() + "\",\"value\":\"" + value + "\"}";
 		HttpURLConnection connection = null;
 		try {
 			connection = executePutRequest(url, payload);

@@ -1,27 +1,90 @@
-2017-03-20 16:56:27,030 [ERROR] LogIn class - Server unavailable while logging in
-2017-03-20 16:56:33,486 [INFO] LogIn class - Login successfull. User: wpsadmin
-2017-03-20 16:56:34,379 [INFO] Connections class - Cases retrieved
-2017-03-20 16:57:06,592 [ERROR] Connections class - Missing parameters
-2017-03-20 16:57:08,936 [INFO] Connections class - Candidate obtained
-2017-03-20 16:57:08,974 [INFO] Connections class - User ids obtained
-2017-03-20 16:57:08,978 [INFO] Connections class - String built
-2017-03-20 16:57:09,002 [INFO] Connections class - Tasks obtained
-2017-03-20 16:57:14,476 [INFO] Connections class - Archived tasks obtained
-2017-03-20 16:57:21,568 [ERROR] Connections class - Missing parameters
-2017-03-20 16:58:02,523 [INFO] Connections class - Variable details retrieved
-2017-03-20 16:58:02,537 [INFO] Connections class - Variable details retrieved
-2017-03-20 16:58:28,217 [INFO] Connections class - Variable details retrieved
-2017-03-20 16:58:28,233 [INFO] Connections class - Variable details retrieved
-2017-03-20 16:58:47,127 [INFO] Connections class - Variable updated
-2017-03-20 16:58:49,280 [INFO] Connections class - Variable details retrieved
-2017-03-20 16:58:49,345 [INFO] Connections class - Variable details retrieved
-2017-03-20 17:04:14,838 [ERROR] Connections class - Missing parameters
-2017-03-20 17:04:16,674 [INFO] Connections class - Cases retrieved
-2017-03-20 17:04:20,587 [INFO] Connections class - Candidate obtained
-2017-03-20 17:04:20,622 [INFO] Connections class - User ids obtained
-2017-03-20 17:04:20,622 [INFO] Connections class - String built
-2017-03-20 17:04:20,647 [INFO] Connections class - Tasks obtained
-2017-03-20 17:04:30,117 [INFO] Connections class - Task assigned to user Marisa Sampaio
-2017-03-20 17:04:31,673 [INFO] Connections class - Actor name obtained
-2017-03-20 17:05:11,701 [INFO] Connections class - Logout successfull. Exit app
-2017-03-20 17:05:11,701 [INFO] MainApp class - Logout successfull. Exit app
+2017-03-27 10:55:22,051 [INFO] LogIn class - Login successfull. User: wpsadmin
+2017-03-27 10:55:23,143 [INFO] Connections class - Cases retrieved
+2017-03-27 10:55:27,855 [INFO] Connections class - Actor name obtained
+2017-03-27 10:55:27,884 [INFO] Connections class - Tasks obtained
+2017-03-27 10:55:35,654 [INFO] Connections class - Browser opened on task
+2017-03-27 10:55:47,776 [INFO] Connections class - Processes retrieved
+2017-03-27 10:55:54,566 [INFO] Connections class - Browser Opened in instantiation form
+2017-03-27 10:56:17,995 [INFO] Connections class - Milestones details obtained
+2017-03-27 10:56:18,555 [INFO] Connections class - Steps retrieved
+2017-03-27 10:56:18,556 [INFO] Connections class - Milestones retrieved
+2017-03-27 10:56:25,491 [INFO] Connections class - Milestones details obtained
+2017-03-27 10:56:25,635 [INFO] Connections class - Steps retrieved
+2017-03-27 10:56:25,635 [INFO] Connections class - Milestones retrieved
+2017-03-27 10:56:26,383 [INFO] Connections class - Steps retrieved
+2017-03-27 10:56:27,990 [INFO] Connections class - Milestones details obtained
+2017-03-27 10:56:28,100 [INFO] Connections class - Steps retrieved
+2017-03-27 10:56:28,100 [INFO] Connections class - Milestones retrieved
+2017-03-27 10:57:01,553 [INFO] Connections class - Processes retrieved
+2017-03-27 10:57:04,597 [INFO] Connections class - Contract retrieved
+2017-03-27 10:57:16,572 [ERROR] Connections class - Unexpected error executing method. Response code: 400
+2017-03-27 10:57:24,175 [INFO] Connections class - Browser Opened in instantiation form
+2017-03-27 10:57:40,241 [INFO] Connections class - Processes retrieved
+2017-03-27 10:57:45,689 [INFO] Connections class - Milestones details obtained
+2017-03-27 10:57:45,776 [INFO] Connections class - Steps retrieved
+2017-03-27 10:57:45,777 [INFO] Connections class - Milestones retrieved
+2017-03-27 10:57:48,800 [INFO] Connections class - Contract retrieved
+2017-03-27 10:57:50,452 [INFO] Connections class - Case started
+2017-03-27 10:57:53,011 [INFO] Connections class - Cases retrieved
+2017-03-27 10:57:58,136 [INFO] Connections class - Candidate obtained
+2017-03-27 10:57:58,238 [INFO] Connections class - User ids obtained
+2017-03-27 10:57:58,243 [INFO] Connections class - String built
+2017-03-27 10:57:58,271 [INFO] Connections class - Tasks obtained
+2017-03-27 10:58:50,282 [INFO] Connections class - Cases retrieved
+2017-03-27 10:58:51,922 [INFO] Connections class - Case deleted
+2017-03-27 10:58:53,559 [INFO] Connections class - Cases retrieved
+2017-03-27 10:58:59,179 [INFO] Connections class - Case deleted
+2017-03-27 10:59:00,693 [INFO] Connections class - No Cases
+2017-03-27 10:59:51,890 [INFO] Connections class - No Processes
+2017-03-27 10:59:52,498 [INFO] Connections class - No Cases
+2017-03-27 11:01:35,289 [INFO] Connections class - No Cases
+2017-03-27 11:01:36,400 [INFO] Connections class - Processes retrieved
+2017-03-27 11:01:43,658 [INFO] Connections class - Browser Opened in instantiation form
+2017-03-27 11:01:58,121 [INFO] Connections class - Cases retrieved
+2017-03-27 11:02:02,212 [INFO] Connections class - Process variables retrieved
+2017-03-27 11:02:05,415 [ERROR] Connections class - Unexpected error executing method. Exception: java.io.FileNotFoundException: http://localhost:8080/bonita/API/bpm/userTask/1440017/contract
+2017-03-27 11:02:07,185 [INFO] Connections class - Contract retrieved
+2017-03-27 11:02:07,185 [INFO] Connections class - No fields found
+2017-03-27 11:02:09,020 [ERROR] Connections class - Unexpected error while executing method. Exception: java.io.FileNotFoundException: http://localhost:8080/bonita/API/bpm/task/1440017
+2017-03-27 11:02:11,225 [INFO] Connections class - Candidate obtained
+2017-03-27 11:02:11,272 [INFO] Connections class - User ids obtained
+2017-03-27 11:02:11,273 [INFO] Connections class - String built
+2017-03-27 11:02:11,307 [INFO] Connections class - Tasks obtained
+2017-03-27 11:02:17,535 [INFO] Connections class - Description obtained
+2017-03-27 11:02:20,245 [INFO] Connections class - Variable details retrieved
+2017-03-27 11:02:20,269 [INFO] Connections class - Variable details retrieved
+2017-03-27 11:02:23,914 [INFO] Connections class - Process variables retrieved
+2017-03-27 11:02:37,831 [INFO] Connections class - Browser opened on task
+2017-03-27 11:02:43,801 [INFO] Connections class - Milestones details obtained
+2017-03-27 11:02:43,909 [INFO] Connections class - Steps retrieved
+2017-03-27 11:02:43,909 [INFO] Connections class - Milestones retrieved
+2017-03-27 11:02:48,071 [INFO] Connections class - Steps retrieved
+2017-03-27 11:02:51,036 [INFO] Connections class - Process variables retrieved
+2017-03-27 11:03:17,227 [INFO] Connections class - Variable updated
+2017-03-27 11:03:19,045 [INFO] Connections class - Process variables retrieved
+2017-03-27 11:03:26,865 [INFO] Connections class - Variable updated
+2017-03-27 11:03:28,509 [INFO] Connections class - Process variables retrieved
+2017-03-27 11:03:39,288 [INFO] Connections class - Step items retrieved
+2017-03-27 11:03:41,448 [INFO] Connections class - Contract retrieved
+2017-03-27 11:03:41,448 [INFO] Connections class - No fields found
+2017-03-27 11:03:43,850 [INFO] Connections class - Step items retrieved
+2017-03-27 11:03:47,615 [INFO] Connections class - Variable details retrieved
+2017-03-27 11:03:47,638 [INFO] Connections class - Variable details retrieved
+2017-03-27 11:03:52,935 [ERROR] Connections class - Unexpected error executing method. Exception: java.io.FileNotFoundException: http://localhost:8080/bonita/API/bpm/caseVariable/70002/cenasActivity
+2017-03-27 11:03:54,951 [INFO] Connections class - Variable updated
+2017-03-27 11:03:56,818 [INFO] Connections class - Variable details retrieved
+2017-03-27 11:03:56,843 [INFO] Connections class - Variable details retrieved
+2017-03-27 11:04:02,852 [INFO] Connections class - Contract retrieved
+2017-03-27 11:04:02,852 [INFO] Connections class - No fields found
+2017-03-27 11:04:06,492 [INFO] Connections class - Candidate obtained
+2017-03-27 11:04:06,534 [INFO] Connections class - User ids obtained
+2017-03-27 11:04:06,535 [INFO] Connections class - String built
+2017-03-27 11:04:10,203 [INFO] Connections class - Candidate obtained
+2017-03-27 11:04:10,244 [INFO] Connections class - User ids obtained
+2017-03-27 11:04:10,244 [INFO] Connections class - String built
+2017-03-27 11:04:10,275 [INFO] Connections class - Tasks obtained
+2017-03-27 11:04:18,857 [INFO] Connections class - Cases retrieved
+2017-03-27 11:04:19,854 [INFO] Connections class - Processes retrieved
+2017-03-27 11:04:22,860 [INFO] Connections class - No Timers found
+2017-03-27 11:05:12,130 [INFO] Connections class - Logout successfull. Exit app
+2017-03-27 11:05:12,130 [INFO] MainApp class - Logout successfull. Exit app

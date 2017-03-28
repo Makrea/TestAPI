@@ -221,7 +221,7 @@ public class MainApp {
 	 *            the process version
 	 * @return a string with error or success code
 	 */
-	public final String of_invokeCreateWorkflow(final String processID) {
+	public final String[] of_invokeCreateWorkflow(final String processID) {
 		return request.of_invokeCreateWorkflow(processID);
 
 	}
@@ -268,8 +268,8 @@ public class MainApp {
 	 * @return a string with success or error code
 	 */
 	public final String[] of_invokeSetProcessVariable(final String caseID, final String variableName,
-			final String variableType, final String value) {
-		return this.request.of_invokeSetProcessVariable(caseID, variableName, variableType, value);
+			final String value) {
+		return this.request.of_invokeSetProcessVariable(caseID, variableName, value);
 	}
 
 	/**
@@ -338,9 +338,8 @@ public class MainApp {
 	 *            the task id
 	 * @return a string with success or error code
 	 */
-	public final String of_invokeDispatchStep(final String processName, final String processVersion,
-			final String taskName, final String taskID) {
-		return request.of_invokeDispatchStep(processName, processVersion, taskName, taskID);
+	public final String[] of_invokeDispatchStep(final String taskID) {
+		return request.of_invokeDispatchStep(taskID);
 	}
 
 	/**

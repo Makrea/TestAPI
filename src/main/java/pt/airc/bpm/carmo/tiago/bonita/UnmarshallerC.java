@@ -142,6 +142,12 @@ public class UnmarshallerC {
 		return task;
 	}
 	
+	/**
+	 *
+	 * @param msg
+	 * @return
+	 * @throws JAXBException
+	 */
 	public final Process process(final String msg) throws JAXBException {
 		final Gson gson = new Gson();
 
@@ -202,6 +208,20 @@ public class UnmarshallerC {
 		final ActivityVariable activityVariable = gson.fromJson(msg, ActivityVariable.class);
 
 		return activityVariable;
+	}
+	
+	/**
+	 *
+	 * @param msg
+	 * @return
+	 * @throws JAXBException
+	 */
+	public CaseVariable caseVariable(final String msg) throws JAXBException {
+		final Gson gson = new Gson();
+
+		final CaseVariable caseVariable = gson.fromJson(msg, CaseVariable.class);
+
+		return caseVariable;
 	}
 
 	/**

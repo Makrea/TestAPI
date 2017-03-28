@@ -57,7 +57,7 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 	 *
 	 */
 	private final JTextField fieldID, fieldProcess, nameField, versionField, taskName, userName, textTaskID,
-			approvedField, textVariableName, txtVariableValue, txtVariableType, urlField, docName;
+			approvedField, textVariableName, txtVariableValue, urlField, docName;
 
 	/**
 	 *
@@ -278,13 +278,6 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 		add(txtVariableValue);
 		txtVariableValue.setColumns(10);
 
-		txtVariableType = new JTextField();
-		txtVariableType.setToolTipText("Variable Type");
-		txtVariableType.setText("Variable Type");
-		txtVariableType.setBounds(415, 361, 159, 20);
-		add(txtVariableType);
-		txtVariableType.setColumns(10);
-
 		btnSetVariable = new JButton("Set Variable");
 		btnSetVariable.setBounds(491, 396, 83, 23);
 		btnSetVariable.addActionListener(this);
@@ -475,17 +468,17 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 		} else if (event.getSource() == this.btnStartCase) {
 
 			txtArea.setText("");
-			String response = this.app.of_invokeCreateWorkflow(this.getFieldProcess().getText());
-			if (response.equals("-5")) {
+			String[] response = this.app.of_invokeCreateWorkflow(this.getFieldProcess().getText());
+			if (response[0].equals("-5")) {
 				JOptionPane.showMessageDialog(null,
 						"Missing/Wrong Parameters.\nParameters needed: Process Name, Process ID, Process Version",
 						ERROR, JOptionPane.ERROR_MESSAGE);
-			} else if (response.equals("-6")) {
+			} else if (response[0].equals("-6")) {
 				JOptionPane.showMessageDialog(null, "Error starting case", ERROR, JOptionPane.ERROR_MESSAGE);
-			} else if (response.equals("-101")) {
+			} else if (response[0].equals("-101")) {
 				JOptionPane.showMessageDialog(null, "Unexpected error while executing the method", ERROR,
 						JOptionPane.ERROR_MESSAGE);
-			} else {
+			} else if(response[0].equals("1")){
 				txtArea.setText("Browser opened in instantiation form");
 			}
 
@@ -619,17 +612,16 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 			// executar tarefa
 		} else if (event.getSource() == this.btnRunTask) {
 
-			String runTask = this.app.of_invokeDispatchStep(this.nameField.getText(), this.versionField.getText(),
-					this.taskName.getText(), this.textTaskID.getText());
-			if (runTask.equals("1")) {
+			String[] runTask = this.app.of_invokeDispatchStep(this.textTaskID.getText());
+			if (runTask[0].equals("1")) {
 				txtArea.setText("Continue on your browser");
-			} else if (runTask.equals("-5")) {
+			} else if (runTask[0].equals("-5")) {
 				JOptionPane.showMessageDialog(null,
-						"Missing/Wrong Parameters.\nParameters needed: Process Name, Process Version, Task Name, Task ID",
+						"Missing/Wrong Parameters.\nParameters needed: Task ID",
 						ERROR, JOptionPane.ERROR_MESSAGE);
-			} else if (runTask.equals("-6")) {
+			} else if (runTask[0].equals("-6")) {
 				JOptionPane.showMessageDialog(null, "Error opening browser on task", ERROR, JOptionPane.ERROR_MESSAGE);
-			} else if (runTask.equals("-101")) {
+			} else if (runTask[0].equals("-101")) {
 				JOptionPane.showMessageDialog(null, "Unexpected error while executing method", ERROR,
 						JOptionPane.ERROR_MESSAGE);
 			}
@@ -755,12 +747,12 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 		} else if (event.getSource() == this.btnSetVariable) {
 
 			String response[] = this.app.of_invokeSetProcessVariable(this.fieldID.getText(),
-					this.textVariableName.getText(), this.txtVariableType.getText(), this.txtVariableValue.getText());
+					this.textVariableName.getText(), this.txtVariableValue.getText());
 			if (response[0].equals("-6")) {
 				JOptionPane.showMessageDialog(null, "Error obtaining variable", ERROR, JOptionPane.ERROR_MESSAGE);
 			} else if (response[0].equals("-5")) {
 				JOptionPane.showMessageDialog(null,
-						"Missing/Wrong Parameters.\nParameters needed: Case ID, Variable Name, Variable Type, Variable Value",
+						"Missing/Wrong Parameters.\nParameters needed: Case ID, Variable Name, Variable Value",
 						ERROR, JOptionPane.ERROR_MESSAGE);
 			} else if (response[0].equals("-101")) {
 				JOptionPane.showMessageDialog(null, "Unexpected error while executing method", ERROR,
