@@ -181,10 +181,10 @@ public class LogIn extends JPanel implements ActionListener, KeyListener {
 			}
 		} else if (event.getSource() == this.btnEnter) {
 			final String username = this.getUserField().getText();
-			final char[] password = this.getPasswordField().getPassword();
+			final String password = this.getPasswordField().getText();
 			final String IP_Servidor = this.getServidorField().getText();
-			String response = this.app.verificaLogIn(username, password, IP_Servidor);
-			switch (response) {
+			String[] response = this.app.verificaLogIn(username, password, IP_Servidor);
+			switch (response[0]) {
 			case "1":
 				JOptionPane.showMessageDialog(null, "Welcome, " + this.app.getUserName(), "Greetings",
 						JOptionPane.INFORMATION_MESSAGE);

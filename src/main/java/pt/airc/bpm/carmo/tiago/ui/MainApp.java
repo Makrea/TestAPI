@@ -154,7 +154,7 @@ public class MainApp {
 	 *            where the server is running
 	 * @return a string with an error or success code
 	 */
-	public final String verificaLogIn(String username, char[] password, String iP_Servidor) {
+	public final String[] verificaLogIn(String username, String password, String iP_Servidor) {
 		return this.request.of_configuracao(username, password, iP_Servidor);
 	}
 

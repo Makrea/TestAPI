@@ -123,9 +123,11 @@ public class Connections {
 	 *            of bonita server
 	 * @return string with error or success code
 	 */
-	public final String of_configuracao(final String username, final char[] password, final String ipServidor1) {
-		if (username.equals("") || password.length == 0 || ipServidor1.equals("")) {
-			return "-5";
+	public final String[] of_configuracao(final String username, final String password, final String ipServidor1) {
+		String[] response = new String[1];
+		if (username.equals("") || password.equals("") || ipServidor1.equals("")) {
+			response[0] = "-5";
+			return response;
 		}
 		setIpServidor("http://" + ipServidor1 + "/bonita");
 		try {
@@ -136,22 +138,25 @@ public class Connections {
 		URL url = null;
 		try {
 			url = new URL("http://" + ipServidor1 + "/bonita/loginservice?username=" + username + "&password="
-					+ String.valueOf(password) + "&redirect=false");
+					+ password + "&redirect=false");
 		} catch (MalformedURLException e) {
-			return "-6";
+			response[0] = "-6";
+			return response;
 		}
 		HttpURLConnection connection = null;
 		try {
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod(POST_METHOD);
 		} catch (IOException e) {
-			return "-101";
+			response[0] = "-101";
+			return response;
 		}
 		String cookieValue = null;
 		try {
 			if (connection.getResponseCode() != SUCCESS_CODE) {
 				jsession = null;
-				return "-2";
+				response[0] = "-2";
+				return response;
 			} else {
 				final List<String> cookies = connection.getHeaderFields().get("Set-Cookie");
 				for (String cookie : cookies) {
@@ -160,10 +165,12 @@ public class Connections {
 					}
 				}
 				setJsession(cookieValue.substring(0, cookieValue.indexOf(";")));
-				return "1";
+				response[0] = "1";
+				return response;
 			}
 		} catch (IOException e) {
-			return "-1";
+			response[0] = "-1";
+			return response;
 		}
 	}
 
