@@ -1,2 +1,1 @@
-2017-04-17 12:14:54,083 [ERROR] LogIn class - Server unavailable while logging in
-2017-04-17 12:14:56,474 [INFO] MainApp class - Exit app
+2017-04-17 12:51:39,289 [INFO] LogIn class - Exit app

@@ -175,15 +175,11 @@ public class Connections {
 	}
 
 	/**
-	 * Create an instance of a process.
-	 *
-	 * @param processName
-	 *            the name of the process from which to start an instance
+	 * Create an instance of a process
+	 * 
 	 * @param processID
-	 *            the id of the process
-	 * @param processVersion
-	 *            the version of the process
-	 * @return string with error or success code
+	 *            the process id from which to create the instance
+	 * @return success or error message
 	 */
 	public final String[] of_invokeCreateWorkflow(final String processID) {
 		Process process = obtainProcess(processID);
@@ -228,9 +224,12 @@ public class Connections {
 	}
 
 	/**
-	 *
+	 * Method to obtain the id of a given process. Input parameters must be
+	 * "name"--"version"
+	 * 
 	 * @param nameVersion
-	 * @return
+	 *            name and version of process
+	 * @return the processID
 	 */
 	public final String getProcessID(final String nameVersion) {
 		URL url = null;
@@ -242,7 +241,7 @@ public class Connections {
 		String[] nameAndVersion = nameVersion.split("--");
 		String name = nameAndVersion[0].replaceAll(" ", "%20");
 		String version = nameAndVersion[1];
-		
+
 		try {
 			url = new URL(getIpServidor() + "/API/bpm/process?p=0&c=200&f=name=" + name + "&f=version=" + version);
 		} catch (MalformedURLException e1) {
@@ -270,17 +269,11 @@ public class Connections {
 	}
 
 	/**
-	 * Run a given task from a given process instance.
-	 *
-	 * @param processName
-	 *            name of process the task belongs to
-	 * @param processVersion
-	 *            version of process the task belongs to
-	 * @param taskName
-	 *            the name of the task to be run
+	 * Run a given task from its ID
+	 * 
 	 * @param taskID
 	 *            the id of the task to be run
-	 * @return a string with error or success codes
+	 * @return success or error message
 	 */
 	public final String[] of_invokeDispatchStep(final String taskID) {
 		String[] error = new String[1];
@@ -334,6 +327,17 @@ public class Connections {
 		}
 	}
 
+	/**
+	 * Obtain the task object from its ID
+	 * 
+	 * @param taskID
+	 *            the ID of the task
+	 * @return the task from which the id belongs to
+	 * @throws IOException
+	 *             in case something goes wrong
+	 * @throws JAXBException
+	 *             if there is an error reading JSON
+	 */
 	private Task obtainTaskFromID(String taskID) throws IOException, JAXBException {
 		URL url = new URL(getIpServidor() + "/API/bpm/task/" + taskID);
 		StringBuilder sbuilder = new StringBuilder();
@@ -343,6 +347,17 @@ public class Connections {
 		return task;
 	}
 
+	/**
+	 * Obtain a process object from a task ID
+	 * 
+	 * @param taskID
+	 *            the task within the process
+	 * @return the process
+	 * @throws IOException
+	 *             in case something goes wrong
+	 * @throws JAXBException
+	 *             in case there is an error reading JSON
+	 */
 	private Process obtainProcessFromTaskID(String taskID) throws IOException, JAXBException {
 		Task task = obtainTaskFromID(taskID);
 		URL url = new URL(getIpServidor() + "/API/bpm/process/" + task.getProcessId());
@@ -483,11 +498,11 @@ public class Connections {
 	}
 
 	/**
-	 * Retrieve the current flowNodes.
+	 * Retrieve the current task.
 	 *
 	 * @param caseID
-	 *            from which to extract the flowNodes
-	 * @return an array with an error code or the flowNodes details
+	 *            from which to extract the task
+	 * @return an array with an error code or the task details
 	 */
 	public final String[] of_invokeGetStepActual(final String caseID) {
 		String[] error = new String[1];
@@ -551,10 +566,11 @@ public class Connections {
 	}
 
 	/**
-	 * AUX
+	 * Obtain process from its ID
 	 * 
 	 * @param processID
-	 * @return
+	 *            of the wanted process
+	 * @return the process
 	 */
 	public Process obtainProcess(final String processID) {
 		URL url;
@@ -822,9 +838,11 @@ public class Connections {
 	}
 
 	/**
-	 *
+	 * Get the variables of a task
+	 * 
 	 * @param taskId
-	 * @return
+	 *            the task from which to know the variables
+	 * @return an array with the variables
 	 */
 	public final String[] of_invokeGetActivityVariables(final String taskId) {
 		String[] error = new String[1];
@@ -1058,17 +1076,15 @@ public class Connections {
 	}
 
 	/**
-	 * Set process variables values.
-	 *
+	 * Set process variable values
+	 * 
 	 * @param caseID
-	 *            form which to extract the variables
+	 *            case id from which to extract the varaibles
 	 * @param variableName
-	 *            from which to set the value
-	 * @param variableType
-	 *            from which to set the value
+	 *            the name of the variables
 	 * @param value
-	 *            to give to the variable
-	 * @return the string containing the success or error code
+	 *            the value to be set
+	 * @return success or error message
 	 */
 	public final String[] of_invokeSetProcessVariable(final String caseID, final String variableName,
 			final String value) {
@@ -1177,14 +1193,11 @@ public class Connections {
 	}
 
 	/**
-	 * Get the passed and not passed milestones in the case.
+	 * get the milestones in a process instance
 	 * 
 	 * @param caseID
-	 *            case from which to know the passed milestones
-	 * @param processID
-	 *            process from which to retrieve all the milestones
-	 * @return a string with the passed and not passed milestones or an error
-	 *         code
+	 *            id of the process instance
+	 * @return the milestones ist or an error message
 	 */
 	public final String[] of_invokeGetMilestones(final String caseID) {
 		String processID;
@@ -1250,10 +1263,13 @@ public class Connections {
 	}
 
 	/**
-	 *
+	 * Obtain the processID from a case ID
+	 * 
 	 * @param caseID
-	 * @return
+	 *            from which to know the processID
+	 * @return the processID
 	 * @throws Exception
+	 *             in case something goes wrong
 	 */
 	private String obtainProcessIDFromCaseID(final String caseID) throws Exception {
 		URL url = null;
@@ -1270,9 +1286,11 @@ public class Connections {
 	}
 
 	/**
-	 *
+	 * Milestones where the case currently is
+	 * 
 	 * @param caseId
-	 * @return
+	 *            from which to know the milestone
+	 * @return an array with the milestones
 	 */
 	public ArrayList<String> searchCurrentMilestones(final String caseId) {
 		URL url = null;
@@ -1404,15 +1422,11 @@ public class Connections {
 	}
 
 	/**
-	 * Open the process overview page.
+	 * Open the overview page of a process isntance
 	 * 
-	 * @param processName
-	 *            the name of the parent process
 	 * @param caseID
-	 *            from which to open the overview
-	 * @param processVersion
-	 *            the version of the parent process
-	 * @return success or error code
+	 *            the id of the process instance
+	 * @return a success or error message
 	 */
 	public final String[] of_invokeGetOverview(final String caseID) {
 		String[] response = new String[1];
@@ -1844,13 +1858,11 @@ public class Connections {
 	}
 
 	/**
-	 * Get the process contract (auxiliary method).
-	 *
+	 * Get the process contract (auxiliary method)
+	 * 
 	 * @param processID
-	 *            name of process from which to extract the contract
-	 * @return the contract
-	 * @throws IOException
-	 *             in case something goes wrong
+	 *            the id of the process
+	 * @return the contract of the process
 	 */
 	public final Contract of_invokeGetProcessContract(final String processID) {
 		URL url = null;
@@ -2218,7 +2230,5 @@ public class Connections {
 	public void setUserName(String userName1) {
 		this.userName = userName1;
 	}
-
-	// ***********************testes************************ //
 
 }

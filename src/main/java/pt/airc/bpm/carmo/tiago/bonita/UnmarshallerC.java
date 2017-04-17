@@ -112,10 +112,13 @@ public class UnmarshallerC {
 	}
 
 	/**
-	 *
+	 * unmarshall a case
+	 * 
 	 * @param msg
-	 * @return
+	 *            the JSON received
+	 * @return the case
 	 * @throws JAXBException
+	 *             in case something goes wrong
 	 */
 	public final Case unCase(final String msg) throws JAXBException {
 		final Gson gson = new Gson();
@@ -143,10 +146,13 @@ public class UnmarshallerC {
 	}
 
 	/**
-	 *
+	 * Unmarshall a process
+	 * 
 	 * @param msg
-	 * @return
+	 *            received
+	 * @return the process object
 	 * @throws JAXBException
+	 *             in case something goes wrong
 	 */
 	public final Process process(final String msg) throws JAXBException {
 		final Gson gson = new Gson();
@@ -211,10 +217,13 @@ public class UnmarshallerC {
 	}
 
 	/**
-	 *
+	 * Unmarshall a case variable
+	 * 
 	 * @param msg
-	 * @return
+	 *            received
+	 * @return the case variable
 	 * @throws JAXBException
+	 *             in case something goes wrong
 	 */
 	public CaseVariable caseVariable(final String msg) throws JAXBException {
 		final Gson gson = new Gson();

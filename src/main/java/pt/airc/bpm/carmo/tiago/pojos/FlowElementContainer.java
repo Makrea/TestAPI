@@ -63,7 +63,7 @@ public class FlowElementContainer {
 
 	/**
 	 *
-	 * @return
+	 * @return the transitions
 	 */
 	public Transition[] getTransitions() {
 		return transitions;
@@ -71,7 +71,7 @@ public class FlowElementContainer {
 
 	/**
 	 *
-	 * @param transitions
+	 * @param transitions to be set
 	 */
 	public void setTransitions(Transition[] transitions) {
 		this.transitions = transitions;

@@ -7,7 +7,6 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -165,13 +164,14 @@ public class MainApp {
 	public final String[] ofInvokeGetWorkClasses() {
 		return request.of_invokeGetWorkClasses();
 	}
-	
+
 	/**
 	 *
 	 * @param nameVersion
-	 * @return
+	 *            the name and version of the workflow
+	 * @return the processID
 	 */
-	public final String getProcessID(final String nameVersion){
+	public final String getProcessID(final String nameVersion) {
 		return request.getProcessID(nameVersion);
 	}
 
@@ -221,18 +221,14 @@ public class MainApp {
 	}
 
 	/**
-	 *
-	 * @param processName
-	 *            the process name
-	 * @param caseID
-	 *            the case id
-	 * @param version
-	 *            the process version
-	 * @return a string with error or success code
+	 * Create workflow
+	 * 
+	 * @param processID
+	 *            from which to start the workflow
+	 * @return an array with error or success message
 	 */
 	public final String[] of_invokeCreateWorkflow(final String processID) {
 		return request.of_invokeCreateWorkflow(processID);
-
 	}
 
 	/**
@@ -265,16 +261,15 @@ public class MainApp {
 	}
 
 	/**
-	 *
+	 * Set value to a process variable
+	 * 
 	 * @param caseID
-	 *            the task id
+	 *            case Id with the variable
 	 * @param variableName
-	 *            the variable name
-	 * @param variableType
-	 *            the variable type
+	 *            the name of the variable
 	 * @param value
-	 *            the variable value
-	 * @return a string with success or error code
+	 *            the value of the variable
+	 * @return success or error message
 	 */
 	public final String[] of_invokeSetProcessVariable(final String caseID, final String variableName,
 			final String value) {
@@ -312,12 +307,11 @@ public class MainApp {
 	}
 
 	/**
-	 *
+	 * Obtain the milestones of a process instance
+	 * 
 	 * @param caseID
-	 *            case id from which to get the completed milestones
-	 * @param processID
-	 *            the process id from which to extract all the milestones
-	 * @return all the milestones (passed and not)
+	 *            id of the case from which to know the milestones
+	 * @return the milestones
 	 */
 	public final String[] of_invokeGetMilestones(final String caseID) {
 		return request.of_invokeGetMilestones(caseID);
@@ -336,30 +330,26 @@ public class MainApp {
 	}
 
 	/**
-	 *
-	 * @param processName
-	 *            the process name
-	 * @param processVersion
-	 *            the process version
-	 * @param taskName
-	 *            the task name
+	 * Run a task
+	 * 
 	 * @param taskID
-	 *            the task id
-	 * @return a string with success or error code
+	 *            id of the task to be run
+	 * @return success or error message
 	 */
 	public final String[] of_invokeDispatchStep(final String taskID) {
 		return request.of_invokeDispatchStep(taskID);
 	}
 
 	/**
-	 *
+	 * Set the value of an activity variable
+	 * 
 	 * @param taskID
-	 *            from which to retrieve the variable
+	 *            id of the task with the variable
 	 * @param variableName
-	 *            the variable name
+	 *            name of the variable
 	 * @param variableValue
-	 *            the variable value to be set
-	 * @return a string with success or error code
+	 *            value of the variable
+	 * @return success or error message
 	 */
 	public final String[] of_invokeSetActivityVariable(final String taskID, final String variableName,
 			final String variableValue) {
@@ -379,13 +369,11 @@ public class MainApp {
 	}
 
 	/**
-	 * Function to obtain the contract of the given process.
-	 *
+	 * Get a contract of a process
+	 * 
 	 * @param processID
-	 *            process id of process
-	 * @return the contract object
-	 * @throws IOException
-	 *             in case something goes wrong
+	 *            id of the process from which to obtain the contract
+	 * @return the process contract
 	 */
 	public final Contract getContract2(final String processID) {
 		return request.of_invokeGetProcessContract(processID);
@@ -412,12 +400,11 @@ public class MainApp {
 	}
 
 	/**
-	 *
+	 * get the varaibles in an activity
+	 * 
 	 * @param taskId
-	 *            from which to get the variable detail
-	 * @param variableName
-	 *            from which to get the details
-	 * @return the variable details or error code
+	 *            the activity id
+	 * @return the varaibles list
 	 */
 	public final String[] of_invokeGetActivityVariables(final String taskId) {
 		return this.request.of_invokeGetActivityVariables(taskId);
@@ -510,14 +497,11 @@ public class MainApp {
 	}
 
 	/**
-	 *
-	 * @param processName
-	 *            the process name
+	 * Get the overview page of a process instance
+	 * 
 	 * @param caseID
-	 *            the case id
-	 * @param processVersion
-	 *            the process version
-	 * @return a string with an error or success code
+	 *            the case Id
+	 * @return success or error message
 	 */
 	public final String[] of_invokeGetOverview(final String caseID) {
 		return this.request.of_invokeGetOverview(caseID);

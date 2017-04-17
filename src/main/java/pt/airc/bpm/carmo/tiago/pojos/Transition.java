@@ -43,7 +43,7 @@ public class Transition {
 
 	/**
 	 *
-	 * @return
+	 * @return the id
 	 */
 	public String getId() {
 		return id;
@@ -51,15 +51,16 @@ public class Transition {
 
 	/**
 	 *
-	 * @param id
+	 * @param id2
+	 *            to be set
 	 */
-	public void setId(String id) {
-		this.id = id;
+	public void setId(String id2) {
+		this.id = id2;
 	}
 
 	/**
 	 *
-	 * @return
+	 * @return the source
 	 */
 	public String getSource() {
 		return source;
@@ -67,15 +68,16 @@ public class Transition {
 
 	/**
 	 *
-	 * @param source
+	 * @param source2
+	 *            to be set
 	 */
-	public void setSource(String source) {
-		this.source = source;
+	public void setSource(String source2) {
+		this.source = source2;
 	}
 
 	/**
 	 *
-	 * @return
+	 * @return the condition
 	 */
 	public Condition getCondition() {
 		return condition;
@@ -83,15 +85,16 @@ public class Transition {
 
 	/**
 	 *
-	 * @param condition
+	 * @param condition2
+	 *            to be set
 	 */
-	public void setCondition(Condition condition) {
-		this.condition = condition;
+	public void setCondition(Condition condition2) {
+		this.condition = condition2;
 	}
 
 	/**
 	 *
-	 * @return
+	 * @return the name
 	 */
 	public String getName() {
 		return name;
@@ -99,15 +102,16 @@ public class Transition {
 
 	/**
 	 *
-	 * @param name
+	 * @param name2
+	 *            to be set
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setName(String name2) {
+		this.name = name2;
 	}
 
 	/**
 	 *
-	 * @return
+	 * @return the target
 	 */
 	public String getTarget() {
 		return target;
@@ -115,10 +119,11 @@ public class Transition {
 
 	/**
 	 *
-	 * @param target
+	 * @param target2
+	 *            to be set
 	 */
-	public void setTarget(String target) {
-		this.target = target;
+	public void setTarget(String target2) {
+		this.target = target2;
 	}
 
 }
