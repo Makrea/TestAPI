@@ -232,46 +232,41 @@ public class Connections {
 	 * @param nameVersion
 	 * @return
 	 */
-	public final String[] getProcessID(final String nameVersion) {
-		String[] response = new String[1];
+	public final String getProcessID(final String nameVersion) {
 		URL url = null;
 
 		if (nameVersion.equals("")) {
-			response[0] = "-5";
-			return response;
+			return "-5";
 		}
 
 		String[] nameAndVersion = nameVersion.split("--");
-		String name = nameAndVersion[0];
+		String name = nameAndVersion[0].replaceAll(" ", "%20");
 		String version = nameAndVersion[1];
 		
 		try {
 			url = new URL(getIpServidor() + "/API/bpm/process?p=0&c=200&f=name=" + name + "&f=version=" + version);
 		} catch (MalformedURLException e1) {
-			response[0] = "-6";
 			LOGGER.error("Error obtaining exposed workflows. Exception: " + e1);
-			return response;
+			return "-6";
 		}
 		StringBuilder sbuilder = new StringBuilder();
 		try {
 			sbuilder = executeGetRequest(url);
 		} catch (IOException e1) {
-			response[0] = "-101";
 			LOGGER.error("Unexpected error executing method. Exception: " + e1);
-			return response;
+			return "-101";
 		}
 		List<Process> process = null;
 		try {
 			process = UNMARSH.processList(sbuilder.toString());
 		} catch (JAXBException e) {
-			response[0] = "-8";
 			LOGGER.error("Error parsing JSON while retrieving processes. Exception: " + e);
-			return response;
+			return "-8";
 		}
 
-		response[0] = process.get(0).getId();
+		String id = process.get(0).getId();
 
-		return response;
+		return id;
 	}
 
 	/**

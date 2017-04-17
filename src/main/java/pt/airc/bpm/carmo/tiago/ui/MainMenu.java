@@ -903,21 +903,21 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 		} else if (event.getSource() == this.btnGetProcessid) {
 
 			txtArea.setText("");
-			String[] response = this.app.getProcessID(this.txtProcessNameVersion.getText());
-			if (response[0].equals("-8")) {
+			String response = this.app.getProcessID(this.txtProcessNameVersion.getText());
+			if (response.equals("-8")) {
 				JOptionPane.showMessageDialog(null, "Error parsing JSON", "Error", JOptionPane.ERROR_MESSAGE);
 			} else if (response.equals("-5")) {
 				JOptionPane.showMessageDialog(null,
 						"Missing/Wrong Parameters.\nParameters needed: processName--processVersion", "Error",
 						JOptionPane.ERROR_MESSAGE);
-			} else if (response[0].equals("-6")) {
+			} else if (response.equals("-6")) {
 				JOptionPane.showMessageDialog(null, "Error deleting Process Instance", "Error",
 						JOptionPane.ERROR_MESSAGE);
-			} else if (response[0].equals("-101")) {
+			} else if (response.equals("-101")) {
 				JOptionPane.showMessageDialog(null, "Unexpected error while executing the method", "Error",
 						JOptionPane.ERROR_MESSAGE);
 			} else {
-				txtArea.setText(response[0]);
+				txtArea.setText(response);
 			}
 
 		}

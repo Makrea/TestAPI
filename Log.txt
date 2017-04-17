@@ -1,5 +1,2 @@
-2017-04-13 12:03:48,298 [INFO] LogIn class - Login successfull. User: wpsadmin
-2017-04-13 12:03:49,535 [INFO] Connections class - No Cases
-2017-04-13 12:03:50,083 [INFO] Connections class - Processes retrieved
-2017-04-13 12:04:02,792 [INFO] Connections class - Logout successfull. Exit app
-2017-04-13 12:04:02,792 [INFO] MainApp class - Logout successfull. Exit app
+2017-04-17 12:14:54,083 [ERROR] LogIn class - Server unavailable while logging in
+2017-04-17 12:14:56,474 [INFO] MainApp class - Exit app

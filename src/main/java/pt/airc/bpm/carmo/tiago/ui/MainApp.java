@@ -171,7 +171,7 @@ public class MainApp {
 	 * @param nameVersion
 	 * @return
 	 */
-	public final String[] getProcessID(final String nameVersion){
+	public final String getProcessID(final String nameVersion){
 		return request.getProcessID(nameVersion);
 	}
 
