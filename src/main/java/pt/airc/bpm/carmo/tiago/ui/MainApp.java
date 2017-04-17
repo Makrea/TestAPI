@@ -165,6 +165,15 @@ public class MainApp {
 	public final String[] ofInvokeGetWorkClasses() {
 		return request.of_invokeGetWorkClasses();
 	}
+	
+	/**
+	 *
+	 * @param nameVersion
+	 * @return
+	 */
+	public final String[] getProcessID(final String nameVersion){
+		return request.getProcessID(nameVersion);
+	}
 
 	/**
 	 *

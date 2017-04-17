@@ -44,7 +44,7 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 	private final JButton btnExitMenu, btnProcesses, searchTask, btnTimer, btnVariable, btnCases, btnStartCase,
 			btnLogout, btnTasks, btnAssignTask, btnRunTask, btnRunTaskP, btnStart, btnDescription, btnActivityVariable,
 			btnStepItems, btnProcessFields, btnSetVariable, btnGetCandidates, btnSetActivityVar, btnMilestone,
-			btnAllSteps, btnDocumentUrl, btnOverview, btnCancelPi;
+			btnAllSteps, btnDocumentUrl, btnOverview, btnCancelPi, btnGetProcessid;
 	/**
 	 *
 	 */
@@ -57,7 +57,7 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 	 *
 	 */
 	private final JTextField fieldID, fieldProcess, nameField, versionField, taskName, userName, textTaskID,
-			approvedField, textVariableName, txtVariableValue, urlField, docName;
+			approvedField, textVariableName, txtVariableValue, urlField, docName, txtProcessNameVersion;
 
 	/**
 	 *
@@ -77,7 +77,7 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 		btnExitMenu = new JButton("Exit");
 		btnExitMenu.setForeground(Color.BLACK);
 		btnExitMenu.setBackground(Color.WHITE);
-		btnExitMenu.setBounds(191, 221, 89, 23);
+		btnExitMenu.setBounds(179, 121, 89, 23);
 		final Image imageExit = new ImageIcon(this.getClass().getResource("/exit.png")).getImage();
 		btnExitMenu.setIcon(new ImageIcon(imageExit));
 		btnExitMenu.setFont(new Font("Cambria Math", Font.PLAIN, 12));
@@ -153,7 +153,7 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 		add(scroll2);
 
 		btnLogout = new JButton("Logout");
-		btnLogout.setBounds(103, 221, 89, 23);
+		btnLogout.setBounds(49, 121, 89, 23);
 		btnLogout.setForeground(Color.BLACK);
 		btnLogout.setBackground(Color.WHITE);
 		final Image imageLogout = new ImageIcon(this.getClass().getResource("/logout.png")).getImage();
@@ -333,6 +333,18 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 		add(docName);
 		docName.setColumns(10);
 
+		btnGetProcessid = new JButton("ProcessID");
+		btnGetProcessid.setBounds(103, 239, 177, 23);
+		btnGetProcessid.addActionListener(this);
+		add(btnGetProcessid);
+
+		txtProcessNameVersion = new JTextField();
+		txtProcessNameVersion.setToolTipText("Process Name And Version");
+		txtProcessNameVersion.setText("Process Name and Version");
+		txtProcessNameVersion.setBounds(103, 208, 177, 20);
+		add(txtProcessNameVersion);
+		txtProcessNameVersion.setColumns(10);
+
 		final JLabel peopleLabel = new JLabel("");
 		peopleLabel.setBounds(327, 227, 258, 238);
 		final Image imagemPeople = new ImageIcon(this.getClass().getResource("/people.png")).getImage();
@@ -478,7 +490,7 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 			} else if (response[0].equals("-101")) {
 				JOptionPane.showMessageDialog(null, "Unexpected error while executing the method", ERROR,
 						JOptionPane.ERROR_MESSAGE);
-			} else if(response[0].equals("1")){
+			} else if (response[0].equals("1")) {
 				txtArea.setText("Browser opened in instantiation form");
 			}
 
@@ -616,9 +628,8 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 			if (runTask[0].equals("1")) {
 				txtArea.setText("Continue on your browser");
 			} else if (runTask[0].equals("-5")) {
-				JOptionPane.showMessageDialog(null,
-						"Missing/Wrong Parameters.\nParameters needed: Task ID",
-						ERROR, JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Missing/Wrong Parameters.\nParameters needed: Task ID", ERROR,
+						JOptionPane.ERROR_MESSAGE);
 			} else if (runTask[0].equals("-6")) {
 				JOptionPane.showMessageDialog(null, "Error opening browser on task", ERROR, JOptionPane.ERROR_MESSAGE);
 			} else if (runTask[0].equals("-101")) {
@@ -752,8 +763,8 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 				JOptionPane.showMessageDialog(null, "Error obtaining variable", ERROR, JOptionPane.ERROR_MESSAGE);
 			} else if (response[0].equals("-5")) {
 				JOptionPane.showMessageDialog(null,
-						"Missing/Wrong Parameters.\nParameters needed: Case ID, Variable Name, Variable Value",
-						ERROR, JOptionPane.ERROR_MESSAGE);
+						"Missing/Wrong Parameters.\nParameters needed: Case ID, Variable Name, Variable Value", ERROR,
+						JOptionPane.ERROR_MESSAGE);
 			} else if (response[0].equals("-101")) {
 				JOptionPane.showMessageDialog(null, "Unexpected error while executing method", ERROR,
 						JOptionPane.ERROR_MESSAGE);
@@ -886,6 +897,27 @@ public class MainMenu extends JPanel implements ActionListener, KeyListener {
 						JOptionPane.ERROR_MESSAGE);
 			} else {
 				JOptionPane.showMessageDialog(null, "Case Deleted", "Success", JOptionPane.INFORMATION_MESSAGE);
+			}
+
+			// obtain processid from name and version
+		} else if (event.getSource() == this.btnGetProcessid) {
+
+			txtArea.setText("");
+			String[] response = this.app.getProcessID(this.txtProcessNameVersion.getText());
+			if (response[0].equals("-8")) {
+				JOptionPane.showMessageDialog(null, "Error parsing JSON", "Error", JOptionPane.ERROR_MESSAGE);
+			} else if (response.equals("-5")) {
+				JOptionPane.showMessageDialog(null,
+						"Missing/Wrong Parameters.\nParameters needed: processName--processVersion", "Error",
+						JOptionPane.ERROR_MESSAGE);
+			} else if (response[0].equals("-6")) {
+				JOptionPane.showMessageDialog(null, "Error deleting Process Instance", "Error",
+						JOptionPane.ERROR_MESSAGE);
+			} else if (response[0].equals("-101")) {
+				JOptionPane.showMessageDialog(null, "Unexpected error while executing the method", "Error",
+						JOptionPane.ERROR_MESSAGE);
+			} else {
+				txtArea.setText(response[0]);
 			}
 
 		}

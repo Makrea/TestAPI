@@ -228,6 +228,53 @@ public class Connections {
 	}
 
 	/**
+	 *
+	 * @param nameVersion
+	 * @return
+	 */
+	public final String[] getProcessID(final String nameVersion) {
+		String[] response = new String[1];
+		URL url = null;
+
+		if (nameVersion.equals("")) {
+			response[0] = "-5";
+			return response;
+		}
+
+		String[] nameAndVersion = nameVersion.split("--");
+		String name = nameAndVersion[0];
+		String version = nameAndVersion[1];
+		
+		try {
+			url = new URL(getIpServidor() + "/API/bpm/process?p=0&c=200&f=name=" + name + "&f=version=" + version);
+		} catch (MalformedURLException e1) {
+			response[0] = "-6";
+			LOGGER.error("Error obtaining exposed workflows. Exception: " + e1);
+			return response;
+		}
+		StringBuilder sbuilder = new StringBuilder();
+		try {
+			sbuilder = executeGetRequest(url);
+		} catch (IOException e1) {
+			response[0] = "-101";
+			LOGGER.error("Unexpected error executing method. Exception: " + e1);
+			return response;
+		}
+		List<Process> process = null;
+		try {
+			process = UNMARSH.processList(sbuilder.toString());
+		} catch (JAXBException e) {
+			response[0] = "-8";
+			LOGGER.error("Error parsing JSON while retrieving processes. Exception: " + e);
+			return response;
+		}
+
+		response[0] = process.get(0).getId();
+
+		return response;
+	}
+
+	/**
 	 * Run a given task from a given process instance.
 	 *
 	 * @param processName
@@ -859,8 +906,7 @@ public class Connections {
 		}
 		String[] processArray = new String[processList.size()];
 		for (int i = 0; i < processList.size(); i++) {
-			processArray[i] = processList.get(i).getName() + "/" + processList.get(i).getId() + "/"
-					+ processList.get(i).getVersion();
+			processArray[i] = processList.get(i).getName() + "--" + processList.get(i).getVersion();
 		}
 		if (processArray.length == 0) {
 			error[0] = "-1";

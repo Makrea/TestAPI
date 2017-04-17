@@ -168,6 +168,7 @@ public class LogIn extends JPanel implements ActionListener, KeyListener {
 	/**
 	 *
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	public final void actionPerformed(final ActionEvent event) {
 		if (event.getSource() == this.btnExit) {

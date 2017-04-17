@@ -110,7 +110,7 @@ public class UnmarshallerC {
 
 		return taskList;
 	}
-	
+
 	/**
 	 *
 	 * @param msg
@@ -141,7 +141,7 @@ public class UnmarshallerC {
 
 		return task;
 	}
-	
+
 	/**
 	 *
 	 * @param msg
@@ -209,7 +209,7 @@ public class UnmarshallerC {
 
 		return activityVariable;
 	}
-	
+
 	/**
 	 *
 	 * @param msg
