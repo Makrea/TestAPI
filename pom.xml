@@ -71,9 +71,9 @@
 	</dependencies>
 
 	<scm>
-		<connection>scm:git:git@github.com:TCarmo20/TestAPI.git</connection>
-		<url>scm:git:git@github.com:TCarmo20/TCarmo20.git</url>
-		<developerConnection>scm:git:git@github.com:TCarmo20/TestAPI.git</developerConnection>
+		<connection>scm:git:git@github.com:Makrea/TestAPI.git</connection>
+		<url>scm:git:git@github.com:Makrea/Makrea.git</url>
+		<developerConnection>scm:git:git@github.com:Makrea/TestAPI.git</developerConnection>
 	</scm>
 
 	<build>
