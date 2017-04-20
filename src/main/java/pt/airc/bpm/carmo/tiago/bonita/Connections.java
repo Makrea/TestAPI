@@ -50,6 +50,9 @@ import pt.airc.bpm.carmo.tiago.pojos.User;
  *
  */
 public class Connections {
+	/**
+	 *
+	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(Connections.class);
 	/**
 	 * String to find milestones.
